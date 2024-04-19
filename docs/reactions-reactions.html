@@ -1,0 +1,666 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Reactions/ReactionsREST API endpoints for reactionsUse the REST API to interact with reactions on GitHub.About reactions
+You can create and manage reactions to comments, issues, pull requests, and discussions on GitHub. When creating a reaction, the allowed values for the content parameter are as follows (with the corresponding emoji for reference):
+
+
+
+Content
+Emoji
+
+
+
+
++1
+👍
+
+
+-1
+👎
+
+
+laugh
+😄
+
+
+confused
+😕
+
+
+heart
+❤️
+
+
+hooray
+🎉
+
+
+rocket
+🚀
+
+
+eyes
+👀
+
+
+List reactions for a team discussion commentList the reactions to a team discussion comment.
+Note: You can also specify a team by org_id and team_id using the route GET /organizations/:org_id/team/:team_id/discussions/:discussion_number/comments/:comment_number/reactions.
+OAuth app tokens and personal access tokens (classic) need the read:discussion scope to use this endpoint.Parameters for "List reactions for a team discussion comment"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionorg string RequiredThe organization name. The name is not case sensitive.team_slug string RequiredThe slug of the team name.discussion_number integer RequiredThe number that identifies the discussion.comment_number integer RequiredThe number that identifies the comment.Query parametersName, Type, Descriptioncontent string Returns a single reaction type. Omit this parameter to list all reactions to a team discussion comment.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List reactions for a team discussion comment"Status codeDescription200OKCode samples for "List reactions for a team discussion comment"Request exampleget/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/orgs/ORG/teams/TEAM_SLUG/discussions/DISCUSSION_NUMBER/comments/COMMENT_NUMBER/reactionsResponseExample responseResponse schemaStatus: 200[
+  {
+    "id": 1,
+    "node_id": "MDg6UmVhY3Rpb24x",
+    "user": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "content": "heart",
+    "created_at": "2016-05-20T20:09:31Z"
+  }
+]Create reaction for a team discussion commentCreate a reaction to a team discussion comment.
+A response with an HTTP 200 status means that you already added the reaction type to this team discussion comment.
+Note: You can also specify a team by org_id and team_id using the route POST /organizations/:org_id/team/:team_id/discussions/:discussion_number/comments/:comment_number/reactions.
+OAuth app tokens and personal access tokens (classic) need the write:discussion scope to use this endpoint.Parameters for "Create reaction for a team discussion comment"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionorg string RequiredThe organization name. The name is not case sensitive.team_slug string RequiredThe slug of the team name.discussion_number integer RequiredThe number that identifies the discussion.comment_number integer RequiredThe number that identifies the comment.Body parametersName, Type, Descriptioncontent string RequiredThe reaction type to add to the team discussion comment.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes HTTP response status codes for "Create reaction for a team discussion comment"Status codeDescription200Response when the reaction type has already been added to this team discussion comment201CreatedCode samples for "Create reaction for a team discussion comment"Request examplesSelect the example typeExample 1: Status Code 200Example 2: Status Code 201post/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/orgs/ORG/teams/TEAM_SLUG/discussions/DISCUSSION_NUMBER/comments/COMMENT_NUMBER/reactions \
+  -d '{"content":"heart"}'Response when the reaction type has already been added to this team discussion commentExample responseResponse schemaStatus: 200{
+  "id": 1,
+  "node_id": "MDg6UmVhY3Rpb24x",
+  "user": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "content": "heart",
+  "created_at": "2016-05-20T20:09:31Z"
+}Delete team discussion comment reactionNote: You can also specify a team or organization with team_id and org_id using the route DELETE /organizations/:org_id/team/:team_id/discussions/:discussion_number/comments/:comment_number/reactions/:reaction_id.
+Delete a reaction to a team discussion comment.
+OAuth app tokens and personal access tokens (classic) need the write:discussion scope to use this endpoint.Fine-grained access tokens for "Delete team discussion comment reaction"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:team_discussions:writeParameters for "Delete team discussion comment reaction"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionorg string RequiredThe organization name. The name is not case sensitive.team_slug string RequiredThe slug of the team name.discussion_number integer RequiredThe number that identifies the discussion.comment_number integer RequiredThe number that identifies the comment.reaction_id integer RequiredThe unique identifier of the reaction.HTTP response status codes for "Delete team discussion comment reaction"Status codeDescription204No ContentCode samples for "Delete team discussion comment reaction"Request exampledelete/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}/reactions/{reaction_id}cURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/orgs/ORG/teams/TEAM_SLUG/discussions/DISCUSSION_NUMBER/comments/COMMENT_NUMBER/reactions/REACTION_IDResponseStatus: 204List reactions for a team discussionList the reactions to a team discussion.
+Note: You can also specify a team by org_id and team_id using the route GET /organizations/:org_id/team/:team_id/discussions/:discussion_number/reactions.
+OAuth app tokens and personal access tokens (classic) need the read:discussion scope to use this endpoint.Parameters for "List reactions for a team discussion"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionorg string RequiredThe organization name. The name is not case sensitive.team_slug string RequiredThe slug of the team name.discussion_number integer RequiredThe number that identifies the discussion.Query parametersName, Type, Descriptioncontent string Returns a single reaction type. Omit this parameter to list all reactions to a team discussion.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List reactions for a team discussion"Status codeDescription200OKCode samples for "List reactions for a team discussion"Request exampleget/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/orgs/ORG/teams/TEAM_SLUG/discussions/DISCUSSION_NUMBER/reactionsResponseExample responseResponse schemaStatus: 200[
+  {
+    "id": 1,
+    "node_id": "MDg6UmVhY3Rpb24x",
+    "user": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "content": "heart",
+    "created_at": "2016-05-20T20:09:31Z"
+  }
+]Create reaction for a team discussionCreate a reaction to a team discussion.
+A response with an HTTP 200 status means that you already added the reaction type to this team discussion.
+Note: You can also specify a team by org_id and team_id using the route POST /organizations/:org_id/team/:team_id/discussions/:discussion_number/reactions.
+OAuth app tokens and personal access tokens (classic) need the write:discussion scope to use this endpoint.Parameters for "Create reaction for a team discussion"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionorg string RequiredThe organization name. The name is not case sensitive.team_slug string RequiredThe slug of the team name.discussion_number integer RequiredThe number that identifies the discussion.Body parametersName, Type, Descriptioncontent string RequiredThe reaction type to add to the team discussion.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes HTTP response status codes for "Create reaction for a team discussion"Status codeDescription200OK201CreatedCode samples for "Create reaction for a team discussion"Request examplesSelect the example typeExample 1: Status Code 200Example 2: Status Code 201post/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/orgs/ORG/teams/TEAM_SLUG/discussions/DISCUSSION_NUMBER/reactions \
+  -d '{"content":"heart"}'ResponseExample responseResponse schemaStatus: 200{
+  "id": 1,
+  "node_id": "MDg6UmVhY3Rpb24x",
+  "user": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "content": "heart",
+  "created_at": "2016-05-20T20:09:31Z"
+}Delete team discussion reactionNote: You can also specify a team or organization with team_id and org_id using the route DELETE /organizations/:org_id/team/:team_id/discussions/:discussion_number/reactions/:reaction_id.
+Delete a reaction to a team discussion.
+OAuth app tokens and personal access tokens (classic) need the write:discussion scope to use this endpoint.Fine-grained access tokens for "Delete team discussion reaction"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:team_discussions:writeParameters for "Delete team discussion reaction"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionorg string RequiredThe organization name. The name is not case sensitive.team_slug string RequiredThe slug of the team name.discussion_number integer RequiredThe number that identifies the discussion.reaction_id integer RequiredThe unique identifier of the reaction.HTTP response status codes for "Delete team discussion reaction"Status codeDescription204No ContentCode samples for "Delete team discussion reaction"Request exampledelete/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/reactions/{reaction_id}cURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/orgs/ORG/teams/TEAM_SLUG/discussions/DISCUSSION_NUMBER/reactions/REACTION_IDResponseStatus: 204List reactions for a commit commentList the reactions to a commit comment.Fine-grained access tokens for "List reactions for a commit comment"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:metadata:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "List reactions for a commit comment"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.comment_id integer RequiredThe unique identifier of the comment.Query parametersName, Type, Descriptioncontent string Returns a single reaction type. Omit this parameter to list all reactions to a commit comment.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List reactions for a commit comment"Status codeDescription200OK404Resource not foundCode samples for "List reactions for a commit comment"Request exampleget/repos/{owner}/{repo}/comments/{comment_id}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/comments/COMMENT_ID/reactionsResponseExample responseResponse schemaStatus: 200[
+  {
+    "id": 1,
+    "node_id": "MDg6UmVhY3Rpb24x",
+    "user": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "content": "heart",
+    "created_at": "2016-05-20T20:09:31Z"
+  }
+]Create reaction for a commit commentCreate a reaction to a commit comment. A response with an HTTP 200 status means that you already added the reaction type to this commit comment.Fine-grained access tokens for "Create reaction for a commit comment"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:contents:writeParameters for "Create reaction for a commit comment"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.comment_id integer RequiredThe unique identifier of the comment.Body parametersName, Type, Descriptioncontent string RequiredThe reaction type to add to the commit comment.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes HTTP response status codes for "Create reaction for a commit comment"Status codeDescription200Reaction exists201Reaction created422Validation failed, or the endpoint has been spammed.Code samples for "Create reaction for a commit comment"Request examplesSelect the example typeExample 1: Status Code 200Example 2: Status Code 201post/repos/{owner}/{repo}/comments/{comment_id}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/comments/COMMENT_ID/reactions \
+  -d '{"content":"heart"}'Reaction existsExample responseResponse schemaStatus: 200{
+  "id": 1,
+  "node_id": "MDg6UmVhY3Rpb24x",
+  "user": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "content": "heart",
+  "created_at": "2016-05-20T20:09:31Z"
+}Delete a commit comment reactionNote: You can also specify a repository by repository_id using the route DELETE /repositories/:repository_id/comments/:comment_id/reactions/:reaction_id.
+Delete a reaction to a commit comment.Fine-grained access tokens for "Delete a commit comment reaction"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:contents:writeParameters for "Delete a commit comment reaction"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.comment_id integer RequiredThe unique identifier of the comment.reaction_id integer RequiredThe unique identifier of the reaction.HTTP response status codes for "Delete a commit comment reaction"Status codeDescription204No ContentCode samples for "Delete a commit comment reaction"Request exampledelete/repos/{owner}/{repo}/comments/{comment_id}/reactions/{reaction_id}cURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/comments/COMMENT_ID/reactions/REACTION_IDResponseStatus: 204List reactions for an issue commentList the reactions to an issue comment.Fine-grained access tokens for "List reactions for an issue comment"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:issues:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "List reactions for an issue comment"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.comment_id integer RequiredThe unique identifier of the comment.Query parametersName, Type, Descriptioncontent string Returns a single reaction type. Omit this parameter to list all reactions to an issue comment.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List reactions for an issue comment"Status codeDescription200OK404Resource not foundCode samples for "List reactions for an issue comment"Request exampleget/repos/{owner}/{repo}/issues/comments/{comment_id}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/issues/comments/COMMENT_ID/reactionsResponseExample responseResponse schemaStatus: 200[
+  {
+    "id": 1,
+    "node_id": "MDg6UmVhY3Rpb24x",
+    "user": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "content": "heart",
+    "created_at": "2016-05-20T20:09:31Z"
+  }
+]Create reaction for an issue commentCreate a reaction to an issue comment. A response with an HTTP 200 status means that you already added the reaction type to this issue comment.Fine-grained access tokens for "Create reaction for an issue comment"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:issues:writeParameters for "Create reaction for an issue comment"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.comment_id integer RequiredThe unique identifier of the comment.Body parametersName, Type, Descriptioncontent string RequiredThe reaction type to add to the issue comment.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes HTTP response status codes for "Create reaction for an issue comment"Status codeDescription200Reaction exists201Reaction created422Validation failed, or the endpoint has been spammed.Code samples for "Create reaction for an issue comment"Request examplesSelect the example typeExample 1: Status Code 200Example 2: Status Code 201post/repos/{owner}/{repo}/issues/comments/{comment_id}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/issues/comments/COMMENT_ID/reactions \
+  -d '{"content":"heart"}'Reaction existsExample responseResponse schemaStatus: 200{
+  "id": 1,
+  "node_id": "MDg6UmVhY3Rpb24x",
+  "user": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "content": "heart",
+  "created_at": "2016-05-20T20:09:31Z"
+}Delete an issue comment reactionNote: You can also specify a repository by repository_id using the route DELETE delete /repositories/:repository_id/issues/comments/:comment_id/reactions/:reaction_id.
+Delete a reaction to an issue comment.Fine-grained access tokens for "Delete an issue comment reaction"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:issues:writeParameters for "Delete an issue comment reaction"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.comment_id integer RequiredThe unique identifier of the comment.reaction_id integer RequiredThe unique identifier of the reaction.HTTP response status codes for "Delete an issue comment reaction"Status codeDescription204No ContentCode samples for "Delete an issue comment reaction"Request exampledelete/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/{reaction_id}cURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/issues/comments/COMMENT_ID/reactions/REACTION_IDResponseStatus: 204List reactions for an issueList the reactions to an issue.Fine-grained access tokens for "List reactions for an issue"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:issues:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "List reactions for an issue"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.issue_number integer RequiredThe number that identifies the issue.Query parametersName, Type, Descriptioncontent string Returns a single reaction type. Omit this parameter to list all reactions to an issue.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List reactions for an issue"Status codeDescription200OK404Resource not found410GoneCode samples for "List reactions for an issue"Request exampleget/repos/{owner}/{repo}/issues/{issue_number}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/issues/ISSUE_NUMBER/reactionsResponseExample responseResponse schemaStatus: 200[
+  {
+    "id": 1,
+    "node_id": "MDg6UmVhY3Rpb24x",
+    "user": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "content": "heart",
+    "created_at": "2016-05-20T20:09:31Z"
+  }
+]Create reaction for an issueCreate a reaction to an issue. A response with an HTTP 200 status means that you already added the reaction type to this issue.Fine-grained access tokens for "Create reaction for an issue"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:issues:writeParameters for "Create reaction for an issue"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.issue_number integer RequiredThe number that identifies the issue.Body parametersName, Type, Descriptioncontent string RequiredThe reaction type to add to the issue.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes HTTP response status codes for "Create reaction for an issue"Status codeDescription200OK201Created422Validation failed, or the endpoint has been spammed.Code samples for "Create reaction for an issue"Request examplesSelect the example typeExample 1: Status Code 200Example 2: Status Code 201post/repos/{owner}/{repo}/issues/{issue_number}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/issues/ISSUE_NUMBER/reactions \
+  -d '{"content":"heart"}'ResponseExample responseResponse schemaStatus: 200{
+  "id": 1,
+  "node_id": "MDg6UmVhY3Rpb24x",
+  "user": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "content": "heart",
+  "created_at": "2016-05-20T20:09:31Z"
+}Delete an issue reactionNote: You can also specify a repository by repository_id using the route DELETE /repositories/:repository_id/issues/:issue_number/reactions/:reaction_id.
+Delete a reaction to an issue.Fine-grained access tokens for "Delete an issue reaction"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:issues:writeParameters for "Delete an issue reaction"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.issue_number integer RequiredThe number that identifies the issue.reaction_id integer RequiredThe unique identifier of the reaction.HTTP response status codes for "Delete an issue reaction"Status codeDescription204No ContentCode samples for "Delete an issue reaction"Request exampledelete/repos/{owner}/{repo}/issues/{issue_number}/reactions/{reaction_id}cURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/issues/ISSUE_NUMBER/reactions/REACTION_IDResponseStatus: 204List reactions for a pull request review commentList the reactions to a pull request review comment.Fine-grained access tokens for "List reactions for a pull request review comment"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:pull_requests:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "List reactions for a pull request review comment"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.comment_id integer RequiredThe unique identifier of the comment.Query parametersName, Type, Descriptioncontent string Returns a single reaction type. Omit this parameter to list all reactions to a pull request review comment.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List reactions for a pull request review comment"Status codeDescription200OK404Resource not foundCode samples for "List reactions for a pull request review comment"Request exampleget/repos/{owner}/{repo}/pulls/comments/{comment_id}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/pulls/comments/COMMENT_ID/reactionsResponseExample responseResponse schemaStatus: 200[
+  {
+    "id": 1,
+    "node_id": "MDg6UmVhY3Rpb24x",
+    "user": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "content": "heart",
+    "created_at": "2016-05-20T20:09:31Z"
+  }
+]Create reaction for a pull request review commentCreate a reaction to a pull request review comment. A response with an HTTP 200 status means that you already added the reaction type to this pull request review comment.Fine-grained access tokens for "Create reaction for a pull request review comment"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:pull_requests:writeParameters for "Create reaction for a pull request review comment"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.comment_id integer RequiredThe unique identifier of the comment.Body parametersName, Type, Descriptioncontent string RequiredThe reaction type to add to the pull request review comment.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes HTTP response status codes for "Create reaction for a pull request review comment"Status codeDescription200Reaction exists201Reaction created422Validation failed, or the endpoint has been spammed.Code samples for "Create reaction for a pull request review comment"Request examplesSelect the example typeExample 1: Status Code 200Example 2: Status Code 201post/repos/{owner}/{repo}/pulls/comments/{comment_id}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/pulls/comments/COMMENT_ID/reactions \
+  -d '{"content":"heart"}'Reaction existsExample responseResponse schemaStatus: 200{
+  "id": 1,
+  "node_id": "MDg6UmVhY3Rpb24x",
+  "user": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "content": "heart",
+  "created_at": "2016-05-20T20:09:31Z"
+}Delete a pull request comment reactionNote: You can also specify a repository by repository_id using the route DELETE /repositories/:repository_id/pulls/comments/:comment_id/reactions/:reaction_id.
+Delete a reaction to a pull request review comment.Fine-grained access tokens for "Delete a pull request comment reaction"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:pull_requests:writeParameters for "Delete a pull request comment reaction"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.comment_id integer RequiredThe unique identifier of the comment.reaction_id integer RequiredThe unique identifier of the reaction.HTTP response status codes for "Delete a pull request comment reaction"Status codeDescription204No ContentCode samples for "Delete a pull request comment reaction"Request exampledelete/repos/{owner}/{repo}/pulls/comments/{comment_id}/reactions/{reaction_id}cURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/pulls/comments/COMMENT_ID/reactions/REACTION_IDResponseStatus: 204List reactions for a releaseList the reactions to a release.Fine-grained access tokens for "List reactions for a release"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token does not require any permissions.Parameters for "List reactions for a release"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.release_id integer RequiredThe unique identifier of the release.Query parametersName, Type, Descriptioncontent string Returns a single reaction type. Omit this parameter to list all reactions to a release.Can be one of: +1, laugh, heart, hooray, rocket, eyes per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List reactions for a release"Status codeDescription200OK404Resource not foundCode samples for "List reactions for a release"Request exampleget/repos/{owner}/{repo}/releases/{release_id}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/releases/RELEASE_ID/reactionsResponseExample responseResponse schemaStatus: 200[
+  {
+    "id": 1,
+    "node_id": "MDg6UmVhY3Rpb24x",
+    "user": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "content": "heart",
+    "created_at": "2016-05-20T20:09:31Z"
+  }
+]Create reaction for a releaseCreate a reaction to a release. A response with a Status: 200 OK means that you already added the reaction type to this release.Fine-grained access tokens for "Create reaction for a release"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token does not require any permissions.Parameters for "Create reaction for a release"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.release_id integer RequiredThe unique identifier of the release.Body parametersName, Type, Descriptioncontent string RequiredThe reaction type to add to the release.Can be one of: +1, laugh, heart, hooray, rocket, eyes HTTP response status codes for "Create reaction for a release"Status codeDescription200Reaction exists201Reaction created422Validation failed, or the endpoint has been spammed.Code samples for "Create reaction for a release"Request examplesSelect the example typeExample 1: Status Code 200Example 2: Status Code 201post/repos/{owner}/{repo}/releases/{release_id}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/releases/RELEASE_ID/reactions \
+  -d '{"content":"heart"}'Reaction existsExample responseResponse schemaStatus: 200{
+  "id": 1,
+  "node_id": "MDg6UmVhY3Rpb24x",
+  "user": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "content": "heart",
+  "created_at": "2016-05-20T20:09:31Z"
+}Delete a release reactionNote: You can also specify a repository by repository_id using the route DELETE delete /repositories/:repository_id/releases/:release_id/reactions/:reaction_id.
+Delete a reaction to a release.Fine-grained access tokens for "Delete a release reaction"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token does not require any permissions.Parameters for "Delete a release reaction"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.release_id integer RequiredThe unique identifier of the release.reaction_id integer RequiredThe unique identifier of the reaction.HTTP response status codes for "Delete a release reaction"Status codeDescription204No ContentCode samples for "Delete a release reaction"Request exampledelete/repos/{owner}/{repo}/releases/{release_id}/reactions/{reaction_id}cURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/releases/RELEASE_ID/reactions/REACTION_IDResponseStatus: 204List reactions for a team discussion comment (Legacy)Deprecation Notice: This endpoint route is deprecated and will be removed from the Teams API. We recommend migrating your existing code to use the new List reactions for a team discussion comment endpoint.
+List the reactions to a team discussion comment.
+OAuth app tokens and personal access tokens (classic) need the read:discussion scope to use this endpoint.Parameters for "List reactions for a team discussion comment (Legacy)"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionteam_id integer RequiredThe unique identifier of the team.discussion_number integer RequiredThe number that identifies the discussion.comment_number integer RequiredThe number that identifies the comment.Query parametersName, Type, Descriptioncontent string Returns a single reaction type. Omit this parameter to list all reactions to a team discussion comment.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List reactions for a team discussion comment (Legacy)"Status codeDescription200OKCode samples for "List reactions for a team discussion comment (Legacy)"Request exampleget/teams/{team_id}/discussions/{discussion_number}/comments/{comment_number}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/teams/TEAM_ID/discussions/DISCUSSION_NUMBER/comments/COMMENT_NUMBER/reactionsResponseExample responseResponse schemaStatus: 200[
+  {
+    "id": 1,
+    "node_id": "MDg6UmVhY3Rpb24x",
+    "user": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "content": "heart",
+    "created_at": "2016-05-20T20:09:31Z"
+  }
+]Create reaction for a team discussion comment (Legacy)Deprecation Notice: This endpoint route is deprecated and will be removed from the Teams API. We recommend migrating your existing code to use the new "Create reaction for a team discussion comment" endpoint.
+Create a reaction to a team discussion comment.
+A response with an HTTP 200 status means that you already added the reaction type to this team discussion comment.
+OAuth app tokens and personal access tokens (classic) need the write:discussion scope to use this endpoint.Parameters for "Create reaction for a team discussion comment (Legacy)"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionteam_id integer RequiredThe unique identifier of the team.discussion_number integer RequiredThe number that identifies the discussion.comment_number integer RequiredThe number that identifies the comment.Body parametersName, Type, Descriptioncontent string RequiredThe reaction type to add to the team discussion comment.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes HTTP response status codes for "Create reaction for a team discussion comment (Legacy)"Status codeDescription201CreatedCode samples for "Create reaction for a team discussion comment (Legacy)"Request examplepost/teams/{team_id}/discussions/{discussion_number}/comments/{comment_number}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/teams/TEAM_ID/discussions/DISCUSSION_NUMBER/comments/COMMENT_NUMBER/reactions \
+  -d '{"content":"heart"}'ResponseExample responseResponse schemaStatus: 201{
+  "id": 1,
+  "node_id": "MDg6UmVhY3Rpb24x",
+  "user": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "content": "heart",
+  "created_at": "2016-05-20T20:09:31Z"
+}List reactions for a team discussion (Legacy)Deprecation Notice: This endpoint route is deprecated and will be removed from the Teams API. We recommend migrating your existing code to use the new List reactions for a team discussion endpoint.
+List the reactions to a team discussion.
+OAuth app tokens and personal access tokens (classic) need the read:discussion scope to use this endpoint.Parameters for "List reactions for a team discussion (Legacy)"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionteam_id integer RequiredThe unique identifier of the team.discussion_number integer RequiredThe number that identifies the discussion.Query parametersName, Type, Descriptioncontent string Returns a single reaction type. Omit this parameter to list all reactions to a team discussion.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List reactions for a team discussion (Legacy)"Status codeDescription200OKCode samples for "List reactions for a team discussion (Legacy)"Request exampleget/teams/{team_id}/discussions/{discussion_number}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/teams/TEAM_ID/discussions/DISCUSSION_NUMBER/reactionsResponseExample responseResponse schemaStatus: 200[
+  {
+    "id": 1,
+    "node_id": "MDg6UmVhY3Rpb24x",
+    "user": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "content": "heart",
+    "created_at": "2016-05-20T20:09:31Z"
+  }
+]Create reaction for a team discussion (Legacy)Deprecation Notice: This endpoint route is deprecated and will be removed from the Teams API. We recommend migrating your existing code to use the new Create reaction for a team discussion endpoint.
+Create a reaction to a team discussion.
+A response with an HTTP 200 status means that you already added the reaction type to this team discussion.
+OAuth app tokens and personal access tokens (classic) need the write:discussion scope to use this endpoint.Parameters for "Create reaction for a team discussion (Legacy)"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionteam_id integer RequiredThe unique identifier of the team.discussion_number integer RequiredThe number that identifies the discussion.Body parametersName, Type, Descriptioncontent string RequiredThe reaction type to add to the team discussion.Can be one of: +1, -1, laugh, confused, heart, hooray, rocket, eyes HTTP response status codes for "Create reaction for a team discussion (Legacy)"Status codeDescription201CreatedCode samples for "Create reaction for a team discussion (Legacy)"Request examplepost/teams/{team_id}/discussions/{discussion_number}/reactionscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/teams/TEAM_ID/discussions/DISCUSSION_NUMBER/reactions \
+  -d '{"content":"heart"}'ResponseExample responseResponse schemaStatus: 201{
+  "id": 1,
+  "node_id": "MDg6UmVhY3Rpb24x",
+  "user": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "content": "heart",
+  "created_at": "2016-05-20T20:09:31Z"
+}

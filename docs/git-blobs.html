@@ -1,0 +1,29 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Git database/BlobsREST API endpoints for Git blobsUse the REST API to interact with a Git blob (binary large object), the object type used to store the contents of each file in a repository.About Git blobs
+A Git blob (binary large object) is the object type used to store the contents of each file in a repository. The file's SHA-1 hash is computed and stored in the blob object. These endpoints allow you to read and write blob objects
+to your Git database on GitHub. Blobs leverage these custom media types. For more information about the use of media types in the API, see "Getting started with the REST API."Create a blobFine-grained access tokens for "Create a blob"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:contents:writeParameters for "Create a blob"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.Body parametersName, Type, Descriptioncontent string RequiredThe new blob's content.encoding string The encoding used for content. Currently, "utf-8" and "base64" are supported.Default: utf-8HTTP response status codes for "Create a blob"Status codeDescription201Created403Forbidden404Resource not found409Conflict422Validation failed, or the endpoint has been spammed.Code samples for "Create a blob"Request examplepost/repos/{owner}/{repo}/git/blobscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/git/blobs \
+  -d '{"content":"Content of the blob","encoding":"utf-8"}'ResponseExample responseResponse schemaStatus: 201{
+  "url": "https://api.github.com/repos/octocat/example/git/blobs/3a0f86fb8db8eea7ccbb9a95f325ddbedfb25e15",
+  "sha": "3a0f86fb8db8eea7ccbb9a95f325ddbedfb25e15"
+}Get a blobThe content in the response will always be Base64 encoded.
+This endpoint supports the following custom media types. For more information, see "Media types."
+
+application/vnd.github.raw+json: Returns the raw blob data.
+application/vnd.github+json: Returns a JSON representation of the blob with content as a base64 encoded string. This is the default if no media type is specified.
+
+Note This endpoint supports blobs up to 100 megabytes in size.Fine-grained access tokens for "Get a blob"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:contents:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "Get a blob"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.file_sha string RequiredHTTP response status codes for "Get a blob"Status codeDescription200OK403Forbidden404Resource not found409Conflict422Validation failed, or the endpoint has been spammed.Code samples for "Get a blob"Request exampleget/repos/{owner}/{repo}/git/blobs/{file_sha}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/git/blobs/FILE_SHAResponseExample responseResponse schemaStatus: 200{
+  "content": "Q29udGVudCBvZiB0aGUgYmxvYg==",
+  "encoding": "base64",
+  "url": "https://api.github.com/repos/octocat/example/git/blobs/3a0f86fb8db8eea7ccbb9a95f325ddbedfb25e15",
+  "sha": "3a0f86fb8db8eea7ccbb9a95f325ddbedfb25e15",
+  "size": 19,
+  "node_id": "Q29udGVudCBvZiB0aGUgYmxvYg=="
+}

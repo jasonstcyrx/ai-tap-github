@@ -1,0 +1,109 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Apps/WebhooksREST API endpoints for GitHub App webhooksUse the REST API to interact with webhooks for OAuth appsAbout webhooks for GitHub Apps
+A GitHub App's webhook allows your server to receive HTTP POST payloads whenever certain events happen for a GitHub App. For more information, see "Webhooks documentation" and "Using webhooks with GitHub Apps."Get a webhook configuration for an appReturns the webhook configuration for a GitHub App. For more information about configuring a webhook for your app, see "Creating a GitHub App."
+You must use a JWT to access this endpoint.Fine-grained access tokens for "Get a webhook configuration for an app"This endpoint does not work with GitHub App user access tokens, GitHub App installation access tokens, or fine-grained personal access tokens.HTTP response status codes for "Get a webhook configuration for an app"Status codeDescription200OKCode samples for "Get a webhook configuration for an app"Request exampleget/app/hook/configcURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/app/hook/configResponseExample responseResponse schemaStatus: 200{
+  "content_type": "json",
+  "insecure_ssl": "0",
+  "secret": "********",
+  "url": "https://example.com/webhook"
+}Update a webhook configuration for an appUpdates the webhook configuration for a GitHub App. For more information about configuring a webhook for your app, see "Creating a GitHub App."
+You must use a JWT to access this endpoint.Fine-grained access tokens for "Update a webhook configuration for an app"This endpoint does not work with GitHub App user access tokens, GitHub App installation access tokens, or fine-grained personal access tokens.Parameters for "Update a webhook configuration for an app"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Body parametersName, Type, Descriptionurl string The URL to which the payloads will be delivered.content_type string The media type used to serialize the payloads. Supported values include json and form. The default is form.secret string If provided, the secret will be used as the key to generate the HMAC hex digest value for delivery signature headers.insecure_ssl string or number Determines whether the SSL certificate of the host for url will be verified when delivering payloads. Supported values include 0 (verification is performed) and 1 (verification is not performed). The default is 0. We strongly recommend not setting this to 1 as you are subject to man-in-the-middle and other attacks.HTTP response status codes for "Update a webhook configuration for an app"Status codeDescription200OKCode samples for "Update a webhook configuration for an app"Request examplepatch/app/hook/configcURLJavaScriptGitHub CLIcurl -L \
+  -X PATCH \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/app/hook/config \
+  -d '{"content_type":"json","insecure_ssl":"0","secret":"********","url":"https://example.com/webhook"}'ResponseExample responseResponse schemaStatus: 200{
+  "content_type": "json",
+  "insecure_ssl": "0",
+  "secret": "********",
+  "url": "https://example.com/webhook"
+}List deliveries for an app webhookReturns a list of webhook deliveries for the webhook configured for a GitHub App.
+You must use a JWT to access this endpoint.Fine-grained access tokens for "List deliveries for an app webhook"This endpoint does not work with GitHub App user access tokens, GitHub App installation access tokens, or fine-grained personal access tokens.Parameters for "List deliveries for an app webhook"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Query parametersName, Type, Descriptionper_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30cursor string Used for pagination: the starting delivery from which the page of deliveries is fetched. Refer to the link header for the next and previous page cursors.redelivery boolean HTTP response status codes for "List deliveries for an app webhook"Status codeDescription200OK400Bad Request422Validation failed, or the endpoint has been spammed.Code samples for "List deliveries for an app webhook"Request exampleget/app/hook/deliveriescURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/app/hook/deliveriesResponseExample responseResponse schemaStatus: 200[
+  {
+    "id": 12345678,
+    "guid": "0b989ba4-242f-11e5-81e1-c7b6966d2516",
+    "delivered_at": "2019-06-03T00:57:16Z",
+    "redelivery": false,
+    "duration": 0.27,
+    "status": "OK",
+    "status_code": 200,
+    "event": "issues",
+    "action": "opened",
+    "installation_id": 123,
+    "repository_id": 456
+  },
+  {
+    "id": 123456789,
+    "guid": "0b989ba4-242f-11e5-81e1-c7b6966d2516",
+    "delivered_at": "2019-06-04T00:57:16Z",
+    "redelivery": true,
+    "duration": 0.28,
+    "status": "OK",
+    "status_code": 200,
+    "event": "issues",
+    "action": "opened",
+    "installation_id": 123,
+    "repository_id": 456
+  }
+]Get a delivery for an app webhookReturns a delivery for the webhook configured for a GitHub App.
+You must use a JWT to access this endpoint.Fine-grained access tokens for "Get a delivery for an app webhook"This endpoint does not work with GitHub App user access tokens, GitHub App installation access tokens, or fine-grained personal access tokens.Parameters for "Get a delivery for an app webhook"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptiondelivery_id integer RequiredHTTP response status codes for "Get a delivery for an app webhook"Status codeDescription200OK400Bad Request422Validation failed, or the endpoint has been spammed.Code samples for "Get a delivery for an app webhook"Request exampleget/app/hook/deliveries/{delivery_id}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/app/hook/deliveries/DELIVERY_IDResponseExample responseResponse schemaStatus: 200{
+  "id": 12345678,
+  "guid": "0b989ba4-242f-11e5-81e1-c7b6966d2516",
+  "delivered_at": "2019-06-03T00:57:16Z",
+  "redelivery": false,
+  "duration": 0.27,
+  "status": "OK",
+  "status_code": 200,
+  "event": "issues",
+  "action": "opened",
+  "installation_id": 123,
+  "repository_id": 456,
+  "url": "https://www.example.com",
+  "request": {
+    "headers": {
+      "X-GitHub-Delivery": "0b989ba4-242f-11e5-81e1-c7b6966d2516",
+      "X-Hub-Signature-256": "sha256=6dcb09b5b57875f334f61aebed695e2e4193db5e",
+      "Accept": "*/*",
+      "X-GitHub-Hook-ID": "42",
+      "User-Agent": "GitHub-Hookshot/b8c71d8",
+      "X-GitHub-Event": "issues",
+      "X-GitHub-Hook-Installation-Target-ID": "123",
+      "X-GitHub-Hook-Installation-Target-Type": "repository",
+      "content-type": "application/json",
+      "X-Hub-Signature": "sha1=a84d88e7554fc1fa21bcbc4efae3c782a70d2b9d"
+    },
+    "payload": {
+      "action": "opened",
+      "issue": {
+        "body": "foo"
+      },
+      "repository": {
+        "id": 123
+      }
+    }
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "text/html;charset=utf-8"
+    },
+    "payload": "ok"
+  }
+}Redeliver a delivery for an app webhookRedeliver a delivery for the webhook configured for a GitHub App.
+You must use a JWT to access this endpoint.Fine-grained access tokens for "Redeliver a delivery for an app webhook"This endpoint does not work with GitHub App user access tokens, GitHub App installation access tokens, or fine-grained personal access tokens.Parameters for "Redeliver a delivery for an app webhook"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptiondelivery_id integer RequiredHTTP response status codes for "Redeliver a delivery for an app webhook"Status codeDescription202Accepted400Bad Request422Validation failed, or the endpoint has been spammed.Code samples for "Redeliver a delivery for an app webhook"Request examplepost/app/hook/deliveries/{delivery_id}/attemptscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/app/hook/deliveries/DELIVERY_ID/attemptsAcceptedExample responseResponse schemaStatus: 202

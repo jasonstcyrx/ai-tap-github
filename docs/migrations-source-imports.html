@@ -1,0 +1,275 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Migrations/Source endpointsREST API endpoints for source importsUse the REST API to start an import from a Git source repository.About source imports
+
+Warning: Due to very low levels of usage and available alternatives, the Source Imports API has been deprecated and is no longer  available as of April 12, 2024. For more details and alternatives, see the changelog.
+
+You can use these endpoints to start an import from a Git repository hosted with another service. This is the same functionality as the GitHub Importer. For more information, see "Importing a repository with GitHub Importer." A typical source import would start the import and then (optionally) update the authors and/or update the preference for using Git LFS if large files exist in the import. You can also create a webhook that listens for the RepositoryImportEvent to find out the status of the import.
+
+These endpoints only support authentication using a personal access token (classic). For more information, see "Managing your personal access tokens."
+
+The following diagram provides a more detailed example:
++---------+                     +--------+                              +---------------------+
+| Tooling |                     | GitHub |                              | Original Repository |
++---------+                     +--------+                              +---------------------+
+     |                              |                                              |
+     |  Start import                |                                              |
+     |----------------------------->|                                              |
+     |                              |                                              |
+     |                              |  Download source data                        |
+     |                              |--------------------------------------------->|
+     |                              |                        Begin streaming data  |
+     |                              |<---------------------------------------------|
+     |                              |                                              |
+     |  Get import progress         |                                              |
+     |----------------------------->|                                              |
+     |       "status": "importing"  |                                              |
+     |<-----------------------------|                                              |
+     |                              |                                              |
+     |  Get commit authors          |                                              |
+     |----------------------------->|                                              |
+     |                              |                                              |
+     |  Map a commit author         |                                              |
+     |----------------------------->|                                              |
+     |                              |                                              |
+     |                              |                                              |
+     |                              |                       Finish streaming data  |
+     |                              |<---------------------------------------------|
+     |                              |                                              |
+     |                              |  Rewrite commits with mapped authors         |
+     |                              |------+                                       |
+     |                              |      |                                       |
+     |                              |<-----+                                       |
+     |                              |                                              |
+     |                              |  Update repository on GitHub                 |
+     |                              |------+                                       |
+     |                              |      |                                       |
+     |                              |<-----+                                       |
+     |                              |                                              |
+     |  Map a commit author         |                                              |
+     |----------------------------->|                                              |
+     |                              |  Rewrite commits with mapped authors         |
+     |                              |------+                                       |
+     |                              |      |                                       |
+     |                              |<-----+                                       |
+     |                              |                                              |
+     |                              |  Update repository on GitHub                 |
+     |                              |------+                                       |
+     |                              |      |                                       |
+     |                              |<-----+                                       |
+     |                              |                                              |
+     |  Get large files             |                                              |
+     |----------------------------->|                                              |
+     |                              |                                              |
+     |  opt_in to Git LFS           |                                              |
+     |----------------------------->|                                              |
+     |                              |  Rewrite commits for large files             |
+     |                              |------+                                       |
+     |                              |      |                                       |
+     |                              |<-----+                                       |
+     |                              |                                              |
+     |                              |  Update repository on GitHub                 |
+     |                              |------+                                       |
+     |                              |      |                                       |
+     |                              |<-----+                                       |
+     |                              |                                              |
+     |  Get import progress         |                                              |
+     |----------------------------->|                                              |
+     |        "status": "complete"  |                                              |
+     |<-----------------------------|                                              |
+     |                              |                                              |
+     |                              |                                              |
+Get an import statusView the progress of an import.
+Warning: Due to very low levels of usage and available alternatives, this endpoint is deprecated and will no longer be available from 00:00 UTC on April 12, 2024. For more details and alternatives, see the changelog.
+Import status
+This section includes details about the possible values of the status field of the Import Progress response.
+An import that does not have errors will progress through these steps:
+
+detecting - the "detection" step of the import is in progress because the request did not include a vcs parameter. The import is identifying the type of source control present at the URL.
+importing - the "raw" step of the import is in progress. This is where commit data is fetched from the original repository. The import progress response will include commit_count (the total number of raw commits that will be imported) and percent (0 - 100, the current progress through the import).
+mapping - the "rewrite" step of the import is in progress. This is where SVN branches are converted to Git branches, and where author updates are applied. The import progress response does not include progress information.
+pushing - the "push" step of the import is in progress. This is where the importer updates the repository on GitHub. The import progress response will include push_percent, which is the percent value reported by git push when it is "Writing objects".
+complete - the import is complete, and the repository is ready on GitHub.
+
+If there are problems, you will see one of these in the status field:
+
+auth_failed - the import requires authentication in order to connect to the original repository. To update authentication for the import, please see the Update an import section.
+error - the import encountered an error. The import progress response will include the failed_step and an error message. Contact GitHub Support for more information.
+detection_needs_auth - the importer requires authentication for the originating repository to continue detection. To update authentication for the import, please see the Update an import section.
+detection_found_nothing - the importer didn't recognize any source control at the URL. To resolve, Cancel the import and retry with the correct URL.
+detection_found_multiple - the importer found several projects or repositories at the provided URL. When this is the case, the Import Progress response will also include a project_choices field with the possible project choices as values. To update project choice, please see the Update an import section.
+
+The project_choices field
+When multiple projects are found at the provided URL, the response hash will include a project_choices field, the value of which is an array of hashes each representing a project choice. The exact key/value pairs of the project hashes will differ depending on the version control type.
+Git LFS related fields
+This section includes details about Git LFS related fields that may be present in the Import Progress response.
+
+use_lfs - describes whether the import has been opted in or out of using Git LFS. The value can be opt_in, opt_out, or undecided if no action has been taken.
+has_large_files - the boolean value describing whether files larger than 100MB were found during the importing step.
+large_files_size - the total size in gigabytes of files larger than 100MB found in the originating repository.
+large_files_count - the total number of files larger than 100MB found in the originating repository. To see a list of these files, make a "Get Large Files" request.
+Fine-grained access tokens for "Get an import status"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:contents:readParameters for "Get an import status"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.HTTP response status codes for "Get an import status"Status codeDescription200OK404Resource not found503Unavailable due to service under maintenance.Code samples for "Get an import status"Request exampleget/repos/{owner}/{repo}/importcURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/importResponseExample responseResponse schemaStatus: 200{
+  "vcs": "subversion",
+  "use_lfs": true,
+  "vcs_url": "http://svn.mycompany.com/svn/myproject",
+  "status": "complete",
+  "status_text": "Done",
+  "has_large_files": true,
+  "large_files_size": 132331036,
+  "large_files_count": 1,
+  "authors_count": 4,
+  "url": "https://api.github.com/repos/octocat/socm/import",
+  "html_url": "https://import.github.com/octocat/socm/import",
+  "authors_url": "https://api.github.com/repos/octocat/socm/import/authors",
+  "repository_url": "https://api.github.com/repos/octocat/socm"
+}Start an importStart a source import to a GitHub repository using GitHub Importer.
+Importing into a GitHub repository with GitHub Actions enabled is not supported and will
+return a status 422 Unprocessable Entity response.
+Warning: Due to very low levels of usage and available alternatives, this endpoint is deprecated and will no longer be available from 00:00 UTC on April 12, 2024. For more details and alternatives, see the changelog.Fine-grained access tokens for "Start an import"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:contents:writeParameters for "Start an import"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.Body parametersName, Type, Descriptionvcs_url string RequiredThe URL of the originating repository.vcs string The originating VCS type. Without this parameter, the import job will take additional time to detect the VCS type before beginning the import. This detection step will be reflected in the response.Can be one of: subversion, git, mercurial, tfvc vcs_username string If authentication is required, the username to provide to vcs_url.vcs_password string If authentication is required, the password to provide to vcs_url.tfvc_project string For a tfvc import, the name of the project that is being imported.HTTP response status codes for "Start an import"Status codeDescription201Created404Resource not found422Validation failed, or the endpoint has been spammed.503Unavailable due to service under maintenance.Code samples for "Start an import"Request exampleput/repos/{owner}/{repo}/importcURLJavaScriptGitHub CLIcurl -L \
+  -X PUT \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/import \
+  -d '{"vcs":"subversion","vcs_url":"http://svn.mycompany.com/svn/myproject","vcs_username":"octocat","vcs_password":"secret"}'ResponseExample responseResponse schemaStatus: 201{
+  "vcs": "subversion",
+  "use_lfs": true,
+  "vcs_url": "http://svn.mycompany.com/svn/myproject",
+  "status": "importing",
+  "status_text": "Importing...",
+  "has_large_files": false,
+  "large_files_size": 0,
+  "large_files_count": 0,
+  "authors_count": 0,
+  "commit_count": 1042,
+  "url": "https://api.github.com/repos/octocat/socm/import",
+  "html_url": "https://import.github.com/octocat/socm/import",
+  "authors_url": "https://api.github.com/repos/octocat/socm/import/authors",
+  "repository_url": "https://api.github.com/repos/octocat/socm"
+}Update an importAn import can be updated with credentials or a project choice by passing in the appropriate parameters in this API
+request. If no parameters are provided, the import will be restarted.
+Some servers (e.g. TFS servers) can have several projects at a single URL. In those cases the import progress will
+have the status detection_found_multiple and the Import Progress response will include a project_choices array.
+You can select the project to import by providing one of the objects in the project_choices array in the update request.
+Warning: Due to very low levels of usage and available alternatives, this endpoint is deprecated and will no longer be available from 00:00 UTC on April 12, 2024. For more details and alternatives, see the changelog.Fine-grained access tokens for "Update an import"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:contents:writeParameters for "Update an import"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.Body parametersName, Type, Descriptionvcs_username string The username to provide to the originating repository.vcs_password string The password to provide to the originating repository.vcs string The type of version control system you are migrating from.Can be one of: subversion, tfvc, git, mercurial tfvc_project string For a tfvc import, the name of the project that is being imported.HTTP response status codes for "Update an import"Status codeDescription200OK503Unavailable due to service under maintenance.Code samples for "Update an import"Request examplesSelect the example typeUpdate authentication for an importUpdating the project choiceRestarting an importpatch/repos/{owner}/{repo}/importcURLJavaScriptGitHub CLIcurl -L \
+  -X PATCH \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/import \
+  -d '{"vcs_username":"octocat","vcs_password":"secret"}'Example 1Example responseResponse schemaStatus: 200{
+  "vcs": "subversion",
+  "use_lfs": true,
+  "vcs_url": "http://svn.mycompany.com/svn/myproject",
+  "status": "detecting",
+  "url": "https://api.github.com/repos/octocat/socm/import",
+  "html_url": "https://import.github.com/octocat/socm/import",
+  "authors_url": "https://api.github.com/repos/octocat/socm/import/authors",
+  "repository_url": "https://api.github.com/repos/octocat/socm"
+}Cancel an importStop an import for a repository.
+Warning: Due to very low levels of usage and available alternatives, this endpoint is deprecated and will no longer be available from 00:00 UTC on April 12, 2024. For more details and alternatives, see the changelog.Fine-grained access tokens for "Cancel an import"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:contents:writeParameters for "Cancel an import"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.HTTP response status codes for "Cancel an import"Status codeDescription204No Content503Unavailable due to service under maintenance.Code samples for "Cancel an import"Request exampledelete/repos/{owner}/{repo}/importcURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/importResponseStatus: 204Get commit authorsEach type of source control system represents authors in a different way. For example, a Git commit author has a display name and an email address, but a Subversion commit author just has a username. The GitHub Importer will make the author information valid, but the author might not be correct. For example, it will change the bare Subversion username hubot into something like hubot <hubot@12341234-abab-fefe-8787-fedcba987654>.
+This endpoint and the Map a commit author endpoint allow you to provide correct Git author information.
+Warning: Due to very low levels of usage and available alternatives, this endpoint is deprecated and will no longer be available from 00:00 UTC on April 12, 2024. For more details and alternatives, see the changelog.Fine-grained access tokens for "Get commit authors"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:contents:readParameters for "Get commit authors"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.Query parametersName, Type, Descriptionsince integer A user ID. Only return users with an ID greater than this ID.HTTP response status codes for "Get commit authors"Status codeDescription200OK404Resource not found503Unavailable due to service under maintenance.Code samples for "Get commit authors"Request exampleget/repos/{owner}/{repo}/import/authorscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/import/authorsResponseExample responseResponse schemaStatus: 200[
+  {
+    "id": 2268557,
+    "remote_id": "nobody@fc7da526-431c-80fe-3c8c-c148ff18d7ef",
+    "remote_name": "nobody",
+    "email": "hubot@github.com",
+    "name": "Hubot",
+    "url": "https://api.github.com/repos/octocat/socm/import/authors/2268557",
+    "import_url": "https://api.github.com/repos/octocat/socm/import"
+  },
+  {
+    "id": 2268558,
+    "remote_id": "svner@fc7da526-431c-80fe-3c8c-c148ff18d7ef",
+    "remote_name": "svner",
+    "email": "svner@fc7da526-431c-80fe-3c8c-c148ff18d7ef",
+    "name": "svner",
+    "url": "https://api.github.com/repos/octocat/socm/import/authors/2268558",
+    "import_url": "https://api.github.com/repos/octocat/socm/import"
+  },
+  {
+    "id": 2268559,
+    "remote_id": "svner@example.com@fc7da526-431c-80fe-3c8c-c148ff18d7ef",
+    "remote_name": "svner@example.com",
+    "email": "svner@example.com@fc7da526-431c-80fe-3c8c-c148ff18d7ef",
+    "name": "svner@example.com",
+    "url": "https://api.github.com/repos/octocat/socm/import/authors/2268559",
+    "import_url": "https://api.github.com/repos/octocat/socm/import"
+  }
+]Map a commit authorUpdate an author's identity for the import. Your application can continue updating authors any time before you push
+new commits to the repository.
+Warning: Due to very low levels of usage and available alternatives, this endpoint is deprecated and will no longer be available from 00:00 UTC on April 12, 2024. For more details and alternatives, see the changelog.Fine-grained access tokens for "Map a commit author"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:contents:writeParameters for "Map a commit author"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.author_id integer RequiredBody parametersName, Type, Descriptionemail string The new Git author email.name string The new Git author name.HTTP response status codes for "Map a commit author"Status codeDescription200OK404Resource not found422Validation failed, or the endpoint has been spammed.503Unavailable due to service under maintenance.Code samples for "Map a commit author"Request examplepatch/repos/{owner}/{repo}/import/authors/{author_id}cURLJavaScriptGitHub CLIcurl -L \
+  -X PATCH \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/import/authors/AUTHOR_ID \
+  -d '{"email":"hubot@github.com","name":"Hubot the Robot"}'ResponseExample responseResponse schemaStatus: 200{
+  "id": 2268557,
+  "remote_id": "nobody@fc7da526-431c-80fe-3c8c-c148ff18d7ef",
+  "remote_name": "nobody",
+  "email": "hubot@github.com",
+  "name": "Hubot",
+  "url": "https://api.github.com/repos/octocat/socm/import/authors/2268557",
+  "import_url": "https://api.github.com/repos/octocat/socm/import"
+}Get large filesList files larger than 100MB found during the import
+Warning: Due to very low levels of usage and available alternatives, this endpoint is deprecated and will no longer be available from 00:00 UTC on April 12, 2024. For more details and alternatives, see the changelog.Fine-grained access tokens for "Get large files"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:contents:readParameters for "Get large files"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.HTTP response status codes for "Get large files"Status codeDescription200OK503Unavailable due to service under maintenance.Code samples for "Get large files"Request exampleget/repos/{owner}/{repo}/import/large_filescURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/import/large_filesResponseExample responseResponse schemaStatus: 200[
+  {
+    "ref_name": "refs/heads/master",
+    "path": "foo/bar/1",
+    "oid": "d3d9446802a44259755d38e6d163e820",
+    "size": 10485760
+  },
+  {
+    "ref_name": "refs/heads/master",
+    "path": "foo/bar/2",
+    "oid": "6512bd43d9caa6e02c990b0a82652dca",
+    "size": 11534336
+  },
+  {
+    "ref_name": "refs/heads/master",
+    "path": "foo/bar/3",
+    "oid": "c20ad4d76fe97759aa27a0c99bff6710",
+    "size": 12582912
+  }
+]Update Git LFS preferenceYou can import repositories from Subversion, Mercurial, and TFS that include files larger than 100MB. This ability
+is powered by Git LFS.
+You can learn more about our LFS feature and working with large files on our help
+site.
+Warning: Due to very low levels of usage and available alternatives, this endpoint is deprecated and will no longer be available from 00:00 UTC on April 12, 2024. For more details and alternatives, see the changelog.Fine-grained access tokens for "Update Git LFS preference"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:contents:writeParameters for "Update Git LFS preference"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.Body parametersName, Type, Descriptionuse_lfs string RequiredWhether to store large files during the import. opt_in means large files will be stored using Git LFS. opt_out means large files will be removed during the import.Can be one of: opt_in, opt_out HTTP response status codes for "Update Git LFS preference"Status codeDescription200OK422Validation failed, or the endpoint has been spammed.503Unavailable due to service under maintenance.Code samples for "Update Git LFS preference"Request examplepatch/repos/{owner}/{repo}/import/lfscURLJavaScriptGitHub CLIcurl -L \
+  -X PATCH \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/import/lfs \
+  -d '{"use_lfs":"opt_in"}'ResponseExample responseResponse schemaStatus: 200{
+  "vcs": "subversion",
+  "use_lfs": true,
+  "vcs_url": "http://svn.mycompany.com/svn/myproject",
+  "status": "complete",
+  "status_text": "Done",
+  "has_large_files": true,
+  "large_files_size": 132331036,
+  "large_files_count": 1,
+  "authors_count": 4,
+  "url": "https://api.github.com/repos/octocat/socm/import",
+  "html_url": "https://import.github.com/octocat/socm/import",
+  "authors_url": "https://api.github.com/repos/octocat/socm/import/authors",
+  "repository_url": "https://api.github.com/repos/octocat/socm"
+}

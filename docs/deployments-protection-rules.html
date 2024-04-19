@@ -1,0 +1,102 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Deployments/Protection rulesREST API endpoints for protection rulesUse the REST API to create, configure, and delete deployment protection rules.Get all deployment protection rules for an environmentGets all custom deployment protection rules that are enabled for an environment. Anyone with read access to the repository can use this endpoint. For more information about environments, see "Using environments for deployment."
+For more information about the app that is providing this custom deployment rule, see the documentation for the GET /apps/{app_slug} endpoint.
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint with a private repository.Fine-grained access tokens for "Get all deployment protection rules for an environment"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:actions:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "Get all deployment protection rules for an environment"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionenvironment_name string RequiredThe name of the environment. The name must be URL encoded. For example, any slashes in the name must be replaced with %2F.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.owner string RequiredThe account owner of the repository. The name is not case sensitive.HTTP response status codes for "Get all deployment protection rules for an environment"Status codeDescription200List of deployment protection rulesCode samples for "Get all deployment protection rules for an environment"Request exampleget/repos/{owner}/{repo}/environments/{environment_name}/deployment_protection_rulescURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/environments/ENVIRONMENT_NAME/deployment_protection_rulesList of deployment protection rulesExample responseResponse schemaStatus: 200{
+  "total_count": 2,
+  "custom_deployment_protection_rules": [
+    {
+      "id": 3,
+      "node_id": "IEH37kRlcGxveW1lbnRTdGF0ddiv",
+      "enabled": true,
+      "app": {
+        "id": 1,
+        "node_id": "GHT58kRlcGxveW1lbnRTdTY!bbcy",
+        "slug": "a-custom-app",
+        "integration_url": "https://api.github.com/apps/a-custom-app"
+      }
+    },
+    {
+      "id": 4,
+      "node_id": "MDE2OkRlcGxveW1lbnRTdHJ41128",
+      "enabled": true,
+      "app": {
+        "id": 1,
+        "node_id": "UHVE67RlcGxveW1lbnRTdTY!jfeuy",
+        "slug": "another-custom-app",
+        "integration_url": "https://api.github.com/apps/another-custom-app"
+      }
+    }
+  ]
+}Create a custom deployment protection rule on an environmentEnable a custom deployment protection rule for an environment.
+The authenticated user must have admin or owner permissions to the repository to use this endpoint.
+For more information about the app that is providing this custom deployment rule, see the documentation for the GET /apps/{app_slug} endpoint.
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint.Fine-grained access tokens for "Create a custom deployment protection rule on an environment"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:administration:writeParameters for "Create a custom deployment protection rule on an environment"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionenvironment_name string RequiredThe name of the environment. The name must be URL encoded. For example, any slashes in the name must be replaced with %2F.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.owner string RequiredThe account owner of the repository. The name is not case sensitive.Body parametersName, Type, Descriptionintegration_id integer The ID of the custom app that will be enabled on the environment.HTTP response status codes for "Create a custom deployment protection rule on an environment"Status codeDescription201The enabled custom deployment protection ruleCode samples for "Create a custom deployment protection rule on an environment"Request examplepost/repos/{owner}/{repo}/environments/{environment_name}/deployment_protection_rulescURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/environments/ENVIRONMENT_NAME/deployment_protection_rules \
+  -d '{"integration_id":5}'The enabled custom deployment protection ruleExample responseResponse schemaStatus: 201{
+  "id": 3,
+  "node_id": "IEH37kRlcGxveW1lbnRTdGF0ddiv",
+  "enabled": true,
+  "app": {
+    "id": 1,
+    "node_id": "GHT58kRlcGxveW1lbnRTdTY!bbcy",
+    "slug": "a-custom-app",
+    "integration_url": "https://api.github.com/apps/a-custom-app"
+  }
+}List custom deployment rule integrations available for an environmentGets all custom deployment protection rule integrations that are available for an environment. Anyone with read access to the repository can use this endpoint.
+For more information about environments, see "Using environments for deployment."
+For more information about the app that is providing this custom deployment rule, see "GET an app".
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint with a private repository.Fine-grained access tokens for "List custom deployment rule integrations available for an environment"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:actions:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "List custom deployment rule integrations available for an environment"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionenvironment_name string RequiredThe name of the environment. The name must be URL encoded. For example, any slashes in the name must be replaced with %2F.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.owner string RequiredThe account owner of the repository. The name is not case sensitive.Query parametersName, Type, Descriptionpage integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30HTTP response status codes for "List custom deployment rule integrations available for an environment"Status codeDescription200A list of custom deployment rule integrations available for this environment.Code samples for "List custom deployment rule integrations available for an environment"Request exampleget/repos/{owner}/{repo}/environments/{environment_name}/deployment_protection_rules/appscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/environments/ENVIRONMENT_NAME/deployment_protection_rules/appsA list of custom deployment rule integrations available for this environment.Example responseResponse schemaStatus: 200[
+  {
+    "total_count": 2
+  },
+  {
+    "available_custom_deployment_protection_rule_integrations": [
+      {
+        "id": 1,
+        "node_id": "GHT58kRlcGxveW1lbnRTdTY!bbcy",
+        "slug": "a-custom-app",
+        "integration_url": "https://api.github.com/apps/a-custom-app"
+      },
+      {
+        "id": 2,
+        "node_id": "UHVE67RlcGxveW1lbnRTdTY!jfeuy",
+        "slug": "another-custom-app",
+        "integration_url": "https://api.github.com/apps/another-custom-app"
+      }
+    ]
+  }
+]Get a custom deployment protection ruleGets an enabled custom deployment protection rule for an environment. Anyone with read access to the repository can use this endpoint. For more information about environments, see "Using environments for deployment."
+For more information about the app that is providing this custom deployment rule, see GET /apps/{app_slug}.
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint with a private repository.Fine-grained access tokens for "Get a custom deployment protection rule"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:actions:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "Get a custom deployment protection rule"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.environment_name string RequiredThe name of the environment. The name must be URL encoded. For example, any slashes in the name must be replaced with %2F.protection_rule_id integer RequiredThe unique identifier of the protection rule.HTTP response status codes for "Get a custom deployment protection rule"Status codeDescription200OKCode samples for "Get a custom deployment protection rule"Request exampleget/repos/{owner}/{repo}/environments/{environment_name}/deployment_protection_rules/{protection_rule_id}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/environments/ENVIRONMENT_NAME/deployment_protection_rules/PROTECTION_RULE_IDResponseExample responseResponse schemaStatus: 200{
+  "id": 3,
+  "node_id": "IEH37kRlcGxveW1lbnRTdGF0ddiv",
+  "enabled": true,
+  "app": {
+    "id": 1,
+    "node_id": "GHT58kRlcGxveW1lbnRTdTY!bbcy",
+    "slug": "a-custom-app",
+    "integration_url": "https://api.github.com/apps/a-custom-app"
+  }
+}Disable a custom protection rule for an environmentDisables a custom deployment protection rule for an environment.
+The authenticated user must have admin or owner permissions to the repository to use this endpoint.
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint.Fine-grained access tokens for "Disable a custom protection rule for an environment"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:administration:writeParameters for "Disable a custom protection rule for an environment"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionenvironment_name string RequiredThe name of the environment. The name must be URL encoded. For example, any slashes in the name must be replaced with %2F.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.owner string RequiredThe account owner of the repository. The name is not case sensitive.protection_rule_id integer RequiredThe unique identifier of the protection rule.HTTP response status codes for "Disable a custom protection rule for an environment"Status codeDescription204No ContentCode samples for "Disable a custom protection rule for an environment"Request exampledelete/repos/{owner}/{repo}/environments/{environment_name}/deployment_protection_rules/{protection_rule_id}cURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/environments/ENVIRONMENT_NAME/deployment_protection_rules/PROTECTION_RULE_IDResponseStatus: 204

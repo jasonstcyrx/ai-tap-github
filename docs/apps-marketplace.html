@@ -1,0 +1,381 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Apps/MarketplaceREST API endpoints for GitHub MarketplaceUse the REST API to interact with GitHub MarketplaceAbout GitHub Marketplace
+For more information about GitHub Marketplace, see "GitHub Marketplace."
+These endpoints allow you to see which customers are using a pricing plan, see a customer's purchases, and see if an account has an active subscription.
+Testing with stubbed endpoints
+You can test your GitHub App with stubbed data. Stubbed data is hard-coded, fake data that will not change based on actual subscriptions.
+To test with stubbed data, use a stubbed endpoint in place of its production counterpart. This allows you to test whether the API logic succeeds before listing GitHub Apps on GitHub Marketplace.
+Make sure to replace stubbed endpoints with production endpoints before deploying your GitHub App.Get a subscription plan for an accountShows whether the user or organization account actively subscribes to a plan listed by the authenticated GitHub App. When someone submits a plan change that won't be processed until the end of their billing cycle, you will also see the upcoming pending change.
+GitHub Apps must use a JWT to access this endpoint. OAuth apps must use basic authentication with their client ID and client secret to access this endpoint.Fine-grained access tokens for "Get a subscription plan for an account"This endpoint does not work with GitHub App user access tokens, GitHub App installation access tokens, or fine-grained personal access tokens.Parameters for "Get a subscription plan for an account"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionaccount_id integer Requiredaccount_id parameterHTTP response status codes for "Get a subscription plan for an account"Status codeDescription200OK401Requires authentication404Not Found when the account has not purchased the listingCode samples for "Get a subscription plan for an account"Request exampleget/marketplace_listing/accounts/{account_id}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/marketplace_listing/accounts/ACCOUNT_IDResponseExample responseResponse schemaStatus: 200{
+  "url": "https://api.github.com/orgs/github",
+  "type": "Organization",
+  "id": 4,
+  "login": "github",
+  "organization_billing_email": "billing@github.com",
+  "email": "billing@github.com",
+  "marketplace_pending_change": {
+    "effective_date": "2017-11-11T00:00:00Z",
+    "unit_count": null,
+    "id": 77,
+    "plan": {
+      "url": "https://api.github.com/marketplace_listing/plans/1111",
+      "accounts_url": "https://api.github.com/marketplace_listing/plans/1111/accounts",
+      "id": 1111,
+      "number": 2,
+      "name": "Startup",
+      "description": "A professional-grade CI solution",
+      "monthly_price_in_cents": 699,
+      "yearly_price_in_cents": 7870,
+      "price_model": "FLAT_RATE",
+      "has_free_trial": true,
+      "state": "published",
+      "unit_name": null,
+      "bullets": [
+        "Up to 10 private repositories",
+        "3 concurrent builds"
+      ]
+    }
+  },
+  "marketplace_purchase": {
+    "billing_cycle": "monthly",
+    "next_billing_date": "2017-11-11T00:00:00Z",
+    "unit_count": null,
+    "on_free_trial": true,
+    "free_trial_ends_on": "2017-11-11T00:00:00Z",
+    "updated_at": "2017-11-02T01:12:12Z",
+    "plan": {
+      "url": "https://api.github.com/marketplace_listing/plans/1313",
+      "accounts_url": "https://api.github.com/marketplace_listing/plans/1313/accounts",
+      "id": 1313,
+      "number": 3,
+      "name": "Pro",
+      "description": "A professional-grade CI solution",
+      "monthly_price_in_cents": 1099,
+      "yearly_price_in_cents": 11870,
+      "price_model": "FLAT_RATE",
+      "has_free_trial": true,
+      "unit_name": null,
+      "state": "published",
+      "bullets": [
+        "Up to 25 private repositories",
+        "11 concurrent builds"
+      ]
+    }
+  }
+}List plansLists all plans that are part of your GitHub Marketplace listing.
+GitHub Apps must use a JWT to access this endpoint. OAuth apps must use basic authentication with their client ID and client secret to access this endpoint.Fine-grained access tokens for "List plans"This endpoint does not work with GitHub App user access tokens, GitHub App installation access tokens, or fine-grained personal access tokens.Parameters for "List plans"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Query parametersName, Type, Descriptionper_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List plans"Status codeDescription200OK401Requires authentication404Resource not foundCode samples for "List plans"Request exampleget/marketplace_listing/planscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/marketplace_listing/plansResponseExample responseResponse schemaStatus: 200[
+  {
+    "url": "https://api.github.com/marketplace_listing/plans/1313",
+    "accounts_url": "https://api.github.com/marketplace_listing/plans/1313/accounts",
+    "id": 1313,
+    "number": 3,
+    "name": "Pro",
+    "description": "A professional-grade CI solution",
+    "monthly_price_in_cents": 1099,
+    "yearly_price_in_cents": 11870,
+    "price_model": "FLAT_RATE",
+    "has_free_trial": true,
+    "unit_name": null,
+    "state": "published",
+    "bullets": [
+      "Up to 25 private repositories",
+      "11 concurrent builds"
+    ]
+  }
+]List accounts for a planReturns user and organization accounts associated with the specified plan, including free plans. For per-seat pricing, you see the list of accounts that have purchased the plan, including the number of seats purchased. When someone submits a plan change that won't be processed until the end of their billing cycle, you will also see the upcoming pending change.
+GitHub Apps must use a JWT to access this endpoint. OAuth apps must use basic authentication with their client ID and client secret to access this endpoint.Fine-grained access tokens for "List accounts for a plan"This endpoint does not work with GitHub App user access tokens, GitHub App installation access tokens, or fine-grained personal access tokens.Parameters for "List accounts for a plan"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionplan_id integer RequiredThe unique identifier of the plan.Query parametersName, Type, Descriptionsort string The property to sort the results by.Default: createdCan be one of: created, updated direction string To return the oldest accounts first, set to asc. Ignored without the sort parameter.Can be one of: asc, desc per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List accounts for a plan"Status codeDescription200OK401Requires authentication404Resource not found422Validation failed, or the endpoint has been spammed.Code samples for "List accounts for a plan"Request exampleget/marketplace_listing/plans/{plan_id}/accountscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/marketplace_listing/plans/PLAN_ID/accountsResponseExample responseResponse schemaStatus: 200[
+  {
+    "url": "https://api.github.com/orgs/github",
+    "type": "Organization",
+    "id": 4,
+    "login": "github",
+    "organization_billing_email": "billing@github.com",
+    "marketplace_pending_change": {
+      "effective_date": "2017-11-11T00:00:00Z",
+      "unit_count": null,
+      "id": 77,
+      "plan": {
+        "url": "https://api.github.com/marketplace_listing/plans/1111",
+        "accounts_url": "https://api.github.com/marketplace_listing/plans/1111/accounts",
+        "id": 1111,
+        "number": 2,
+        "name": "Startup",
+        "description": "A professional-grade CI solution",
+        "monthly_price_in_cents": 699,
+        "yearly_price_in_cents": 7870,
+        "price_model": "FLAT_RATE",
+        "has_free_trial": true,
+        "state": "published",
+        "unit_name": null,
+        "bullets": [
+          "Up to 10 private repositories",
+          "3 concurrent builds"
+        ]
+      }
+    },
+    "marketplace_purchase": {
+      "billing_cycle": "monthly",
+      "next_billing_date": "2017-11-11T00:00:00Z",
+      "unit_count": null,
+      "on_free_trial": true,
+      "free_trial_ends_on": "2017-11-11T00:00:00Z",
+      "updated_at": "2017-11-02T01:12:12Z",
+      "plan": {
+        "url": "https://api.github.com/marketplace_listing/plans/1313",
+        "accounts_url": "https://api.github.com/marketplace_listing/plans/1313/accounts",
+        "id": 1313,
+        "number": 3,
+        "name": "Pro",
+        "description": "A professional-grade CI solution",
+        "monthly_price_in_cents": 1099,
+        "yearly_price_in_cents": 11870,
+        "price_model": "FLAT_RATE",
+        "has_free_trial": true,
+        "unit_name": null,
+        "state": "published",
+        "bullets": [
+          "Up to 25 private repositories",
+          "11 concurrent builds"
+        ]
+      }
+    }
+  }
+]Get a subscription plan for an account (stubbed)Shows whether the user or organization account actively subscribes to a plan listed by the authenticated GitHub App. When someone submits a plan change that won't be processed until the end of their billing cycle, you will also see the upcoming pending change.
+GitHub Apps must use a JWT to access this endpoint. OAuth apps must use basic authentication with their client ID and client secret to access this endpoint.Fine-grained access tokens for "Get a subscription plan for an account (stubbed)"This endpoint does not work with GitHub App user access tokens, GitHub App installation access tokens, or fine-grained personal access tokens.Parameters for "Get a subscription plan for an account (stubbed)"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionaccount_id integer Requiredaccount_id parameterHTTP response status codes for "Get a subscription plan for an account (stubbed)"Status codeDescription200OK401Requires authentication404Not Found when the account has not purchased the listingCode samples for "Get a subscription plan for an account (stubbed)"Request exampleget/marketplace_listing/stubbed/accounts/{account_id}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/marketplace_listing/stubbed/accounts/ACCOUNT_IDResponseExample responseResponse schemaStatus: 200{
+  "url": "https://api.github.com/orgs/github",
+  "type": "Organization",
+  "id": 4,
+  "login": "github",
+  "organization_billing_email": "billing@github.com",
+  "email": "billing@github.com",
+  "marketplace_pending_change": {
+    "effective_date": "2017-11-11T00:00:00Z",
+    "unit_count": null,
+    "id": 77,
+    "plan": {
+      "url": "https://api.github.com/marketplace_listing/plans/1111",
+      "accounts_url": "https://api.github.com/marketplace_listing/plans/1111/accounts",
+      "id": 1111,
+      "number": 2,
+      "name": "Startup",
+      "description": "A professional-grade CI solution",
+      "monthly_price_in_cents": 699,
+      "yearly_price_in_cents": 7870,
+      "price_model": "FLAT_RATE",
+      "has_free_trial": true,
+      "state": "published",
+      "unit_name": null,
+      "bullets": [
+        "Up to 10 private repositories",
+        "3 concurrent builds"
+      ]
+    }
+  },
+  "marketplace_purchase": {
+    "billing_cycle": "monthly",
+    "next_billing_date": "2017-11-11T00:00:00Z",
+    "unit_count": null,
+    "on_free_trial": true,
+    "free_trial_ends_on": "2017-11-11T00:00:00Z",
+    "updated_at": "2017-11-02T01:12:12Z",
+    "plan": {
+      "url": "https://api.github.com/marketplace_listing/plans/1313",
+      "accounts_url": "https://api.github.com/marketplace_listing/plans/1313/accounts",
+      "id": 1313,
+      "number": 3,
+      "name": "Pro",
+      "description": "A professional-grade CI solution",
+      "monthly_price_in_cents": 1099,
+      "yearly_price_in_cents": 11870,
+      "price_model": "FLAT_RATE",
+      "has_free_trial": true,
+      "unit_name": null,
+      "state": "published",
+      "bullets": [
+        "Up to 25 private repositories",
+        "11 concurrent builds"
+      ]
+    }
+  }
+}List plans (stubbed)Lists all plans that are part of your GitHub Marketplace listing.
+GitHub Apps must use a JWT to access this endpoint. OAuth apps must use basic authentication with their client ID and client secret to access this endpoint.Fine-grained access tokens for "List plans (stubbed)"This endpoint does not work with GitHub App user access tokens, GitHub App installation access tokens, or fine-grained personal access tokens.Parameters for "List plans (stubbed)"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Query parametersName, Type, Descriptionper_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List plans (stubbed)"Status codeDescription200OK401Requires authenticationCode samples for "List plans (stubbed)"Request exampleget/marketplace_listing/stubbed/planscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/marketplace_listing/stubbed/plansResponseExample responseResponse schemaStatus: 200[
+  {
+    "url": "https://api.github.com/marketplace_listing/plans/1313",
+    "accounts_url": "https://api.github.com/marketplace_listing/plans/1313/accounts",
+    "id": 1313,
+    "number": 3,
+    "name": "Pro",
+    "description": "A professional-grade CI solution",
+    "monthly_price_in_cents": 1099,
+    "yearly_price_in_cents": 11870,
+    "price_model": "FLAT_RATE",
+    "has_free_trial": true,
+    "unit_name": null,
+    "state": "published",
+    "bullets": [
+      "Up to 25 private repositories",
+      "11 concurrent builds"
+    ]
+  }
+]List accounts for a plan (stubbed)Returns repository and organization accounts associated with the specified plan, including free plans. For per-seat pricing, you see the list of accounts that have purchased the plan, including the number of seats purchased. When someone submits a plan change that won't be processed until the end of their billing cycle, you will also see the upcoming pending change.
+GitHub Apps must use a JWT to access this endpoint. OAuth apps must use basic authentication with their client ID and client secret to access this endpoint.Fine-grained access tokens for "List accounts for a plan (stubbed)"This endpoint does not work with GitHub App user access tokens, GitHub App installation access tokens, or fine-grained personal access tokens.Parameters for "List accounts for a plan (stubbed)"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionplan_id integer RequiredThe unique identifier of the plan.Query parametersName, Type, Descriptionsort string The property to sort the results by.Default: createdCan be one of: created, updated direction string To return the oldest accounts first, set to asc. Ignored without the sort parameter.Can be one of: asc, desc per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List accounts for a plan (stubbed)"Status codeDescription200OK401Requires authenticationCode samples for "List accounts for a plan (stubbed)"Request exampleget/marketplace_listing/stubbed/plans/{plan_id}/accountscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/marketplace_listing/stubbed/plans/PLAN_ID/accountsResponseExample responseResponse schemaStatus: 200[
+  {
+    "url": "https://api.github.com/orgs/github",
+    "type": "Organization",
+    "id": 4,
+    "login": "github",
+    "organization_billing_email": "billing@github.com",
+    "marketplace_pending_change": {
+      "effective_date": "2017-11-11T00:00:00Z",
+      "unit_count": null,
+      "id": 77,
+      "plan": {
+        "url": "https://api.github.com/marketplace_listing/plans/1111",
+        "accounts_url": "https://api.github.com/marketplace_listing/plans/1111/accounts",
+        "id": 1111,
+        "number": 2,
+        "name": "Startup",
+        "description": "A professional-grade CI solution",
+        "monthly_price_in_cents": 699,
+        "yearly_price_in_cents": 7870,
+        "price_model": "FLAT_RATE",
+        "has_free_trial": true,
+        "state": "published",
+        "unit_name": null,
+        "bullets": [
+          "Up to 10 private repositories",
+          "3 concurrent builds"
+        ]
+      }
+    },
+    "marketplace_purchase": {
+      "billing_cycle": "monthly",
+      "next_billing_date": "2017-11-11T00:00:00Z",
+      "unit_count": null,
+      "on_free_trial": true,
+      "free_trial_ends_on": "2017-11-11T00:00:00Z",
+      "updated_at": "2017-11-02T01:12:12Z",
+      "plan": {
+        "url": "https://api.github.com/marketplace_listing/plans/1313",
+        "accounts_url": "https://api.github.com/marketplace_listing/plans/1313/accounts",
+        "id": 1313,
+        "number": 3,
+        "name": "Pro",
+        "description": "A professional-grade CI solution",
+        "monthly_price_in_cents": 1099,
+        "yearly_price_in_cents": 11870,
+        "price_model": "FLAT_RATE",
+        "has_free_trial": true,
+        "unit_name": null,
+        "state": "published",
+        "bullets": [
+          "Up to 25 private repositories",
+          "11 concurrent builds"
+        ]
+      }
+    }
+  }
+]List subscriptions for the authenticated userLists the active subscriptions for the authenticated user.Fine-grained access tokens for "List subscriptions for the authenticated user"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token does not require any permissions.Parameters for "List subscriptions for the authenticated user"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Query parametersName, Type, Descriptionper_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List subscriptions for the authenticated user"Status codeDescription200OK304Not modified401Requires authentication404Resource not foundCode samples for "List subscriptions for the authenticated user"Request exampleget/user/marketplace_purchasescURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/user/marketplace_purchasesResponseExample responseResponse schemaStatus: 200[
+  {
+    "billing_cycle": "monthly",
+    "next_billing_date": "2017-11-11T00:00:00Z",
+    "unit_count": null,
+    "on_free_trial": true,
+    "free_trial_ends_on": "2017-11-11T00:00:00Z",
+    "updated_at": "2017-11-02T01:12:12Z",
+    "account": {
+      "login": "github",
+      "id": 4,
+      "node_id": "MDEyOk9yZ2FuaXphdGlvbjE=",
+      "url": "https://api.github.com/orgs/github",
+      "email": null,
+      "organization_billing_email": "billing@github.com",
+      "type": "Organization"
+    },
+    "plan": {
+      "url": "https://api.github.com/marketplace_listing/plans/1313",
+      "accounts_url": "https://api.github.com/marketplace_listing/plans/1313/accounts",
+      "id": 1313,
+      "number": 3,
+      "name": "Pro",
+      "description": "A professional-grade CI solution",
+      "monthly_price_in_cents": 1099,
+      "yearly_price_in_cents": 11870,
+      "price_model": "FLAT_RATE",
+      "has_free_trial": true,
+      "unit_name": null,
+      "state": "published",
+      "bullets": [
+        "Up to 25 private repositories",
+        "11 concurrent builds"
+      ]
+    }
+  }
+]List subscriptions for the authenticated user (stubbed)Lists the active subscriptions for the authenticated user.Fine-grained access tokens for "List subscriptions for the authenticated user (stubbed)"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token does not require any permissions.Parameters for "List subscriptions for the authenticated user (stubbed)"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Query parametersName, Type, Descriptionper_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List subscriptions for the authenticated user (stubbed)"Status codeDescription200OK304Not modified401Requires authenticationCode samples for "List subscriptions for the authenticated user (stubbed)"Request exampleget/user/marketplace_purchases/stubbedcURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/user/marketplace_purchases/stubbedResponseExample responseResponse schemaStatus: 200[
+  {
+    "billing_cycle": "monthly",
+    "next_billing_date": "2017-11-11T00:00:00Z",
+    "unit_count": null,
+    "on_free_trial": true,
+    "free_trial_ends_on": "2017-11-11T00:00:00Z",
+    "updated_at": "2017-11-02T01:12:12Z",
+    "account": {
+      "login": "github",
+      "id": 4,
+      "node_id": "MDEyOk9yZ2FuaXphdGlvbjE=",
+      "url": "https://api.github.com/orgs/github",
+      "email": null,
+      "organization_billing_email": "billing@github.com",
+      "type": "Organization"
+    },
+    "plan": {
+      "url": "https://api.github.com/marketplace_listing/plans/1313",
+      "accounts_url": "https://api.github.com/marketplace_listing/plans/1313/accounts",
+      "id": 1313,
+      "number": 3,
+      "name": "Pro",
+      "description": "A professional-grade CI solution",
+      "monthly_price_in_cents": 1099,
+      "yearly_price_in_cents": 11870,
+      "price_model": "FLAT_RATE",
+      "has_free_trial": true,
+      "unit_name": null,
+      "state": "published",
+      "bullets": [
+        "Up to 25 private repositories",
+        "11 concurrent builds"
+      ]
+    }
+  }
+]

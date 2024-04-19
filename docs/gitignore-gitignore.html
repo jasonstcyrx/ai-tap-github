@@ -1,0 +1,25 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Gitignore/GitignoreREST API endpoints for gitignoreUse the REST API to get .gitignore templates that can be used to ignore files and directories.About gitignore
+When you create a new repository on GitHub.com via the API, you can specify a .gitignore template to apply to the repository upon creation. You can use the REST API to get .gitignore templates from the GitHub .gitignore repository.Get all gitignore templatesList all templates available to pass as an option when creating a repository.Fine-grained access tokens for "Get all gitignore templates"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token does not require any permissions.HTTP response status codes for "Get all gitignore templates"Status codeDescription200OK304Not modifiedCode samples for "Get all gitignore templates"Request exampleget/gitignore/templatescURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gitignore/templatesResponseExample responseResponse schemaStatus: 200[
+  "Actionscript",
+  "Android",
+  "AppceleratorTitanium",
+  "Autotools",
+  "Bancha",
+  "C",
+  "C++"
+]Get a gitignore templateGet the content of a gitignore template.
+This endpoint supports the following custom media types. For more information, see "Media types."
+
+application/vnd.github.raw+json: Returns the raw .gitignore contents.
+Fine-grained access tokens for "Get a gitignore template"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token does not require any permissions.Parameters for "Get a gitignore template"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionname string RequiredHTTP response status codes for "Get a gitignore template"Status codeDescription200OK304Not modifiedCode samples for "Get a gitignore template"Request exampleget/gitignore/templates/{name}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gitignore/templates/NAMEResponseExample responseResponse schemaStatus: 200{
+  "name": "C",
+  "source": "# Object files\n*.o\n\n# Libraries\n*.lib\n*.a\n\n# Shared objects (inc. Windows DLLs)\n*.dll\n*.so\n*.so.*\n*.dylib\n\n# Executables\n*.exe\n*.out\n*.app\n"
+}

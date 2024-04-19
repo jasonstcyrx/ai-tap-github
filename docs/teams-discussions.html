@@ -1,0 +1,471 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Teams/DiscussionsREST API endpoints for team discussionsUse the REST API to get, create, edit, and delete discussion posts on a team's page.
+The team discussions and team discussion comments endpoints will be deprecated on 2023-11-28 in favor of GitHub Discussions. For more information about GitHub Discussions, see "GitHub Discussions documentation."
+List discussionsList all discussions on a team's page.
+Note: You can also specify a team by org_id and team_id using the route GET /organizations/{org_id}/team/{team_id}/discussions.
+OAuth app tokens and personal access tokens (classic) need the read:discussion scope to use this endpoint.Parameters for "List discussions"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionorg string RequiredThe organization name. The name is not case sensitive.team_slug string RequiredThe slug of the team name.Query parametersName, Type, Descriptiondirection string The direction to sort the results by.Default: descCan be one of: asc, desc per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1pinned string Pinned discussions only filterHTTP response status codes for "List discussions"Status codeDescription200OKCode samples for "List discussions"Request exampleget/orgs/{org}/teams/{team_slug}/discussionscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/orgs/ORG/teams/TEAM_SLUG/discussionsResponseExample responseResponse schemaStatus: 200[
+  {
+    "author": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "body": "Hi! This is an area for us to collaborate as a team.",
+    "body_html": "<p>Hi! This is an area for us to collaborate as a team</p>",
+    "body_version": "0d495416a700fb06133c612575d92bfb",
+    "comments_count": 0,
+    "comments_url": "https://api.github.com/teams/2343027/discussions/1/comments",
+    "created_at": "2018-01-25T18:56:31Z",
+    "last_edited_at": null,
+    "html_url": "https://github.com/orgs/github/teams/justice-league/discussions/1",
+    "node_id": "MDE0OlRlYW1EaXNjdXNzaW9uMQ==",
+    "number": 1,
+    "pinned": false,
+    "private": false,
+    "team_url": "https://api.github.com/teams/2343027",
+    "title": "Our first team post",
+    "updated_at": "2018-01-25T18:56:31Z",
+    "url": "https://api.github.com/teams/2343027/discussions/1",
+    "reactions": {
+      "url": "https://api.github.com/teams/2343027/discussions/1/reactions",
+      "total_count": 5,
+      "+1": 3,
+      "-1": 1,
+      "laugh": 0,
+      "confused": 0,
+      "heart": 1,
+      "hooray": 0,
+      "eyes": 1,
+      "rocket": 1
+    }
+  }
+]Create a discussionCreates a new discussion post on a team's page.
+This endpoint triggers notifications. Creating content too quickly using this endpoint may result in secondary rate limiting. For more information, see "Rate limits for the API" and "Best practices for using the REST API."
+Note: You can also specify a team by org_id and team_id using the route POST /organizations/{org_id}/team/{team_id}/discussions.
+OAuth app tokens and personal access tokens (classic) need the write:discussion scope to use this endpoint.Parameters for "Create a discussion"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionorg string RequiredThe organization name. The name is not case sensitive.team_slug string RequiredThe slug of the team name.Body parametersName, Type, Descriptiontitle string RequiredThe discussion post's title.body string RequiredThe discussion post's body text.private boolean Private posts are only visible to team members, organization owners, and team maintainers. Public posts are visible to all members of the organization. Set to true to create a private post.Default: falseHTTP response status codes for "Create a discussion"Status codeDescription201CreatedCode samples for "Create a discussion"Request examplepost/orgs/{org}/teams/{team_slug}/discussionscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/orgs/ORG/teams/TEAM_SLUG/discussions \
+  -d '{"title":"Our first team post","body":"Hi! This is an area for us to collaborate as a team."}'ResponseExample responseResponse schemaStatus: 201{
+  "author": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "body": "Hi! This is an area for us to collaborate as a team.",
+  "body_html": "<p>Hi! This is an area for us to collaborate as a team</p>",
+  "body_version": "0d495416a700fb06133c612575d92bfb",
+  "comments_count": 0,
+  "comments_url": "https://api.github.com/teams/2343027/discussions/1/comments",
+  "created_at": "2018-01-25T18:56:31Z",
+  "last_edited_at": null,
+  "html_url": "https://github.com/orgs/github/teams/justice-league/discussions/1",
+  "node_id": "MDE0OlRlYW1EaXNjdXNzaW9uMQ==",
+  "number": 1,
+  "pinned": false,
+  "private": false,
+  "team_url": "https://api.github.com/teams/2343027",
+  "title": "Our first team post",
+  "updated_at": "2018-01-25T18:56:31Z",
+  "url": "https://api.github.com/teams/2343027/discussions/1",
+  "reactions": {
+    "url": "https://api.github.com/teams/2343027/discussions/1/reactions",
+    "total_count": 5,
+    "+1": 3,
+    "-1": 1,
+    "laugh": 0,
+    "confused": 0,
+    "heart": 1,
+    "hooray": 0,
+    "eyes": 1,
+    "rocket": 1
+  }
+}Get a discussionGet a specific discussion on a team's page.
+Note: You can also specify a team by org_id and team_id using the route GET /organizations/{org_id}/team/{team_id}/discussions/{discussion_number}.
+OAuth app tokens and personal access tokens (classic) need the read:discussion scope to use this endpoint.Parameters for "Get a discussion"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionorg string RequiredThe organization name. The name is not case sensitive.team_slug string RequiredThe slug of the team name.discussion_number integer RequiredThe number that identifies the discussion.HTTP response status codes for "Get a discussion"Status codeDescription200OKCode samples for "Get a discussion"Request exampleget/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/orgs/ORG/teams/TEAM_SLUG/discussions/DISCUSSION_NUMBERResponseExample responseResponse schemaStatus: 200{
+  "author": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "body": "Hi! This is an area for us to collaborate as a team.",
+  "body_html": "<p>Hi! This is an area for us to collaborate as a team</p>",
+  "body_version": "0d495416a700fb06133c612575d92bfb",
+  "comments_count": 0,
+  "comments_url": "https://api.github.com/teams/2343027/discussions/1/comments",
+  "created_at": "2018-01-25T18:56:31Z",
+  "last_edited_at": null,
+  "html_url": "https://github.com/orgs/github/teams/justice-league/discussions/1",
+  "node_id": "MDE0OlRlYW1EaXNjdXNzaW9uMQ==",
+  "number": 1,
+  "pinned": false,
+  "private": false,
+  "team_url": "https://api.github.com/teams/2343027",
+  "title": "Our first team post",
+  "updated_at": "2018-01-25T18:56:31Z",
+  "url": "https://api.github.com/teams/2343027/discussions/1",
+  "reactions": {
+    "url": "https://api.github.com/teams/2343027/discussions/1/reactions",
+    "total_count": 5,
+    "+1": 3,
+    "-1": 1,
+    "laugh": 0,
+    "confused": 0,
+    "heart": 1,
+    "hooray": 0,
+    "eyes": 1,
+    "rocket": 1
+  }
+}Update a discussionEdits the title and body text of a discussion post. Only the parameters you provide are updated.
+Note: You can also specify a team by org_id and team_id using the route PATCH /organizations/{org_id}/team/{team_id}/discussions/{discussion_number}.
+OAuth app tokens and personal access tokens (classic) need the write:discussion scope to use this endpoint.Parameters for "Update a discussion"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionorg string RequiredThe organization name. The name is not case sensitive.team_slug string RequiredThe slug of the team name.discussion_number integer RequiredThe number that identifies the discussion.Body parametersName, Type, Descriptiontitle string The discussion post's title.body string The discussion post's body text.HTTP response status codes for "Update a discussion"Status codeDescription200OKCode samples for "Update a discussion"Request examplepatch/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}cURLJavaScriptGitHub CLIcurl -L \
+  -X PATCH \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/orgs/ORG/teams/TEAM_SLUG/discussions/DISCUSSION_NUMBER \
+  -d '{"title":"Welcome to our first team post"}'ResponseExample responseResponse schemaStatus: 200{
+  "author": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "body": "Hi! This is an area for us to collaborate as a team.",
+  "body_html": "<p>Hi! This is an area for us to collaborate as a team</p>",
+  "body_version": "0d495416a700fb06133c612575d92bfb",
+  "comments_count": 1,
+  "comments_url": "https://api.github.com/teams/2343027/discussions/1/comments",
+  "created_at": "2018-01-25T18:56:31Z",
+  "last_edited_at": "2018-01-26T18:22:20Z",
+  "html_url": "https://github.com/orgs/github/teams/justice-league/discussions/1",
+  "node_id": "MDE0OlRlYW1EaXNjdXNzaW9uMQ==",
+  "number": 1,
+  "pinned": false,
+  "private": false,
+  "team_url": "https://api.github.com/teams/2343027",
+  "title": "Welcome to our first team post",
+  "updated_at": "2018-01-26T18:22:20Z",
+  "url": "https://api.github.com/teams/2343027/discussions/1",
+  "reactions": {
+    "url": "https://api.github.com/teams/2343027/discussions/1/reactions",
+    "total_count": 5,
+    "+1": 3,
+    "-1": 1,
+    "laugh": 0,
+    "confused": 0,
+    "heart": 1,
+    "hooray": 0,
+    "eyes": 1,
+    "rocket": 1
+  }
+}Delete a discussionDelete a discussion from a team's page.
+Note: You can also specify a team by org_id and team_id using the route DELETE /organizations/{org_id}/team/{team_id}/discussions/{discussion_number}.
+OAuth app tokens and personal access tokens (classic) need the write:discussion scope to use this endpoint.Parameters for "Delete a discussion"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionorg string RequiredThe organization name. The name is not case sensitive.team_slug string RequiredThe slug of the team name.discussion_number integer RequiredThe number that identifies the discussion.HTTP response status codes for "Delete a discussion"Status codeDescription204No ContentCode samples for "Delete a discussion"Request exampledelete/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}cURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/orgs/ORG/teams/TEAM_SLUG/discussions/DISCUSSION_NUMBERResponseStatus: 204List discussions (Legacy)Deprecation Notice: This endpoint route is deprecated and will be removed from the Teams API. We recommend migrating your existing code to use the new List discussions endpoint.
+List all discussions on a team's page.
+OAuth app tokens and personal access tokens (classic) need the read:discussion scope to use this endpoint.Parameters for "List discussions (Legacy)"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionteam_id integer RequiredThe unique identifier of the team.Query parametersName, Type, Descriptiondirection string The direction to sort the results by.Default: descCan be one of: asc, desc per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List discussions (Legacy)"Status codeDescription200OKCode samples for "List discussions (Legacy)"Request exampleget/teams/{team_id}/discussionscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/teams/TEAM_ID/discussionsResponseExample responseResponse schemaStatus: 200[
+  {
+    "author": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "body": "Hi! This is an area for us to collaborate as a team.",
+    "body_html": "<p>Hi! This is an area for us to collaborate as a team</p>",
+    "body_version": "0d495416a700fb06133c612575d92bfb",
+    "comments_count": 0,
+    "comments_url": "https://api.github.com/teams/2343027/discussions/1/comments",
+    "created_at": "2018-01-25T18:56:31Z",
+    "last_edited_at": null,
+    "html_url": "https://github.com/orgs/github/teams/justice-league/discussions/1",
+    "node_id": "MDE0OlRlYW1EaXNjdXNzaW9uMQ==",
+    "number": 1,
+    "pinned": false,
+    "private": false,
+    "team_url": "https://api.github.com/teams/2343027",
+    "title": "Our first team post",
+    "updated_at": "2018-01-25T18:56:31Z",
+    "url": "https://api.github.com/teams/2343027/discussions/1",
+    "reactions": {
+      "url": "https://api.github.com/teams/2343027/discussions/1/reactions",
+      "total_count": 5,
+      "+1": 3,
+      "-1": 1,
+      "laugh": 0,
+      "confused": 0,
+      "heart": 1,
+      "hooray": 0,
+      "eyes": 1,
+      "rocket": 1
+    }
+  }
+]Create a discussion (Legacy)Deprecation Notice: This endpoint route is deprecated and will be removed from the Teams API. We recommend migrating your existing code to use the new Create a discussion endpoint.
+Creates a new discussion post on a team's page.
+This endpoint triggers notifications. Creating content too quickly using this endpoint may result in secondary rate limiting. For more information, see "Rate limits for the API" and "Best practices for using the REST API."
+OAuth app tokens and personal access tokens (classic) need the write:discussion scope to use this endpoint.Parameters for "Create a discussion (Legacy)"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionteam_id integer RequiredThe unique identifier of the team.Body parametersName, Type, Descriptiontitle string RequiredThe discussion post's title.body string RequiredThe discussion post's body text.private boolean Private posts are only visible to team members, organization owners, and team maintainers. Public posts are visible to all members of the organization. Set to true to create a private post.Default: falseHTTP response status codes for "Create a discussion (Legacy)"Status codeDescription201CreatedCode samples for "Create a discussion (Legacy)"Request examplepost/teams/{team_id}/discussionscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/teams/TEAM_ID/discussions \
+  -d '{"title":"Our first team post","body":"Hi! This is an area for us to collaborate as a team."}'ResponseExample responseResponse schemaStatus: 201{
+  "author": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "body": "Hi! This is an area for us to collaborate as a team.",
+  "body_html": "<p>Hi! This is an area for us to collaborate as a team</p>",
+  "body_version": "0d495416a700fb06133c612575d92bfb",
+  "comments_count": 0,
+  "comments_url": "https://api.github.com/teams/2343027/discussions/1/comments",
+  "created_at": "2018-01-25T18:56:31Z",
+  "last_edited_at": null,
+  "html_url": "https://github.com/orgs/github/teams/justice-league/discussions/1",
+  "node_id": "MDE0OlRlYW1EaXNjdXNzaW9uMQ==",
+  "number": 1,
+  "pinned": false,
+  "private": false,
+  "team_url": "https://api.github.com/teams/2343027",
+  "title": "Our first team post",
+  "updated_at": "2018-01-25T18:56:31Z",
+  "url": "https://api.github.com/teams/2343027/discussions/1",
+  "reactions": {
+    "url": "https://api.github.com/teams/2343027/discussions/1/reactions",
+    "total_count": 5,
+    "+1": 3,
+    "-1": 1,
+    "laugh": 0,
+    "confused": 0,
+    "heart": 1,
+    "hooray": 0,
+    "eyes": 1,
+    "rocket": 1
+  }
+}Get a discussion (Legacy)Deprecation Notice: This endpoint route is deprecated and will be removed from the Teams API. We recommend migrating your existing code to use the new Get a discussion endpoint.
+Get a specific discussion on a team's page.
+OAuth app tokens and personal access tokens (classic) need the read:discussion scope to use this endpoint.Parameters for "Get a discussion (Legacy)"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionteam_id integer RequiredThe unique identifier of the team.discussion_number integer RequiredThe number that identifies the discussion.HTTP response status codes for "Get a discussion (Legacy)"Status codeDescription200OKCode samples for "Get a discussion (Legacy)"Request exampleget/teams/{team_id}/discussions/{discussion_number}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/teams/TEAM_ID/discussions/DISCUSSION_NUMBERResponseExample responseResponse schemaStatus: 200{
+  "author": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "body": "Hi! This is an area for us to collaborate as a team.",
+  "body_html": "<p>Hi! This is an area for us to collaborate as a team</p>",
+  "body_version": "0d495416a700fb06133c612575d92bfb",
+  "comments_count": 0,
+  "comments_url": "https://api.github.com/teams/2343027/discussions/1/comments",
+  "created_at": "2018-01-25T18:56:31Z",
+  "last_edited_at": null,
+  "html_url": "https://github.com/orgs/github/teams/justice-league/discussions/1",
+  "node_id": "MDE0OlRlYW1EaXNjdXNzaW9uMQ==",
+  "number": 1,
+  "pinned": false,
+  "private": false,
+  "team_url": "https://api.github.com/teams/2343027",
+  "title": "Our first team post",
+  "updated_at": "2018-01-25T18:56:31Z",
+  "url": "https://api.github.com/teams/2343027/discussions/1",
+  "reactions": {
+    "url": "https://api.github.com/teams/2343027/discussions/1/reactions",
+    "total_count": 5,
+    "+1": 3,
+    "-1": 1,
+    "laugh": 0,
+    "confused": 0,
+    "heart": 1,
+    "hooray": 0,
+    "eyes": 1,
+    "rocket": 1
+  }
+}Update a discussion (Legacy)Deprecation Notice: This endpoint route is deprecated and will be removed from the Teams API. We recommend migrating your existing code to use the new Update a discussion endpoint.
+Edits the title and body text of a discussion post. Only the parameters you provide are updated.
+OAuth app tokens and personal access tokens (classic) need the write:discussion scope to use this endpoint.Parameters for "Update a discussion (Legacy)"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionteam_id integer RequiredThe unique identifier of the team.discussion_number integer RequiredThe number that identifies the discussion.Body parametersName, Type, Descriptiontitle string The discussion post's title.body string The discussion post's body text.HTTP response status codes for "Update a discussion (Legacy)"Status codeDescription200OKCode samples for "Update a discussion (Legacy)"Request examplepatch/teams/{team_id}/discussions/{discussion_number}cURLJavaScriptGitHub CLIcurl -L \
+  -X PATCH \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/teams/TEAM_ID/discussions/DISCUSSION_NUMBER \
+  -d '{"title":"Welcome to our first team post"}'ResponseExample responseResponse schemaStatus: 200{
+  "author": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "body": "Hi! This is an area for us to collaborate as a team.",
+  "body_html": "<p>Hi! This is an area for us to collaborate as a team</p>",
+  "body_version": "0d495416a700fb06133c612575d92bfb",
+  "comments_count": 1,
+  "comments_url": "https://api.github.com/teams/2343027/discussions/1/comments",
+  "created_at": "2018-01-25T18:56:31Z",
+  "last_edited_at": "2018-01-26T18:22:20Z",
+  "html_url": "https://github.com/orgs/github/teams/justice-league/discussions/1",
+  "node_id": "MDE0OlRlYW1EaXNjdXNzaW9uMQ==",
+  "number": 1,
+  "pinned": false,
+  "private": false,
+  "team_url": "https://api.github.com/teams/2343027",
+  "title": "Welcome to our first team post",
+  "updated_at": "2018-01-26T18:22:20Z",
+  "url": "https://api.github.com/teams/2343027/discussions/1",
+  "reactions": {
+    "url": "https://api.github.com/teams/2343027/discussions/1/reactions",
+    "total_count": 5,
+    "+1": 3,
+    "-1": 1,
+    "laugh": 0,
+    "confused": 0,
+    "heart": 1,
+    "hooray": 0,
+    "eyes": 1,
+    "rocket": 1
+  }
+}Delete a discussion (Legacy)Deprecation Notice: This endpoint route is deprecated and will be removed from the Teams API. We recommend migrating your existing code to use the new Delete a discussion endpoint.
+Delete a discussion from a team's page.
+OAuth app tokens and personal access tokens (classic) need the write:discussion scope to use this endpoint.Parameters for "Delete a discussion (Legacy)"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionteam_id integer RequiredThe unique identifier of the team.discussion_number integer RequiredThe number that identifies the discussion.HTTP response status codes for "Delete a discussion (Legacy)"Status codeDescription204No ContentCode samples for "Delete a discussion (Legacy)"Request exampledelete/teams/{team_id}/discussions/{discussion_number}cURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/teams/TEAM_ID/discussions/DISCUSSION_NUMBERResponseStatus: 204

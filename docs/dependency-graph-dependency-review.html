@@ -1,0 +1,47 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Dependency graph/Dependency reviewREST API endpoints for dependency reviewUse the REST API to interact with dependency changes.About dependency review
+You can use the REST API to view dependency changes, and the security impact of these changes, before you add them to your environment. You can view the diff of dependencies between two commits of a repository, including vulnerability data for any version updates with known vulnerabilities. For more information about dependency review, see "About dependency review."Get a diff of the dependencies between commitsGets the diff of the dependency changes between two commits of a repository, based on the changes to the dependency manifests made in those commits.Fine-grained access tokens for "Get a diff of the dependencies between commits"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:contents:read and pull_requests:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "Get a diff of the dependencies between commits"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.basehead string RequiredThe base and head Git revisions to compare. The Git revisions will be resolved to commit SHAs. Named revisions will be resolved to their corresponding HEAD commits, and an appropriate merge base will be determined. This parameter expects the format {base}...{head}.Query parametersName, Type, Descriptionname string The full path, relative to the repository root, of the dependency manifest file.HTTP response status codes for "Get a diff of the dependencies between commits"Status codeDescription200OK403Response if GitHub Advanced Security is not enabled for this repository404Resource not foundCode samples for "Get a diff of the dependencies between commits"Request exampleget/repos/{owner}/{repo}/dependency-graph/compare/{basehead}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/dependency-graph/compare/BASEHEADResponseExample responseResponse schemaStatus: 200[
+  {
+    "change_type": "removed",
+    "manifest": "package.json",
+    "ecosystem": "npm",
+    "name": "helmet",
+    "version": "4.6.0",
+    "package_url": "pkg:npm/helmet@4.6.0",
+    "license": "MIT",
+    "source_repository_url": "https://github.com/helmetjs/helmet",
+    "vulnerabilities": []
+  },
+  {
+    "change_type": "added",
+    "manifest": "package.json",
+    "ecosystem": "npm",
+    "name": "helmet",
+    "version": "5.0.0",
+    "package_url": "pkg:npm/helmet@5.0.0",
+    "license": "MIT",
+    "source_repository_url": "https://github.com/helmetjs/helmet",
+    "vulnerabilities": []
+  },
+  {
+    "change_type": "added",
+    "manifest": "Gemfile",
+    "ecosystem": "rubygems",
+    "name": "ruby-openid",
+    "version": "2.7.0",
+    "package_url": "pkg:gem/ruby-openid@2.7.0",
+    "license": null,
+    "source_repository_url": "https://github.com/openid/ruby-openid",
+    "vulnerabilities": [
+      {
+        "severity": "critical",
+        "advisory_ghsa_id": "GHSA-fqfj-cmh6-hj49",
+        "advisory_summary": "Ruby OpenID",
+        "advisory_url": "https://github.com/advisories/GHSA-fqfj-cmh6-hj49"
+      }
+    ]
+  }
+]

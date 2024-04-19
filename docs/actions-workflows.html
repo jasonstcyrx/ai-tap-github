@@ -1,0 +1,93 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Actions/WorkflowsREST API endpoints for workflowsUse the REST API to interact with workflows in GitHub Actions.About workflows in GitHub Actions
+You can use the REST API to view workflows for a repository in GitHub Actions. Workflows automate your software development life cycle with a wide range of tools and services. For more information, see "About workflows" in the GitHub Actions documentation.List repository workflowsLists the workflows in a repository.
+Anyone with read access to the repository can use this endpoint.
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint with a private repository.Fine-grained access tokens for "List repository workflows"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:actions:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "List repository workflows"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.Query parametersName, Type, Descriptionper_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List repository workflows"Status codeDescription200OKCode samples for "List repository workflows"Request exampleget/repos/{owner}/{repo}/actions/workflowscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/actions/workflowsResponseExample responseResponse schemaStatus: 200{
+  "total_count": 2,
+  "workflows": [
+    {
+      "id": 161335,
+      "node_id": "MDg6V29ya2Zsb3cxNjEzMzU=",
+      "name": "CI",
+      "path": ".github/workflows/blank.yaml",
+      "state": "active",
+      "created_at": "2020-01-08T23:48:37.000-08:00",
+      "updated_at": "2020-01-08T23:50:21.000-08:00",
+      "url": "https://api.github.com/repos/octo-org/octo-repo/actions/workflows/161335",
+      "html_url": "https://github.com/octo-org/octo-repo/blob/master/.github/workflows/161335",
+      "badge_url": "https://github.com/octo-org/octo-repo/workflows/CI/badge.svg"
+    },
+    {
+      "id": 269289,
+      "node_id": "MDE4OldvcmtmbG93IFNlY29uZGFyeTI2OTI4OQ==",
+      "name": "Linter",
+      "path": ".github/workflows/linter.yaml",
+      "state": "active",
+      "created_at": "2020-01-08T23:48:37.000-08:00",
+      "updated_at": "2020-01-08T23:50:21.000-08:00",
+      "url": "https://api.github.com/repos/octo-org/octo-repo/actions/workflows/269289",
+      "html_url": "https://github.com/octo-org/octo-repo/blob/master/.github/workflows/269289",
+      "badge_url": "https://github.com/octo-org/octo-repo/workflows/Linter/badge.svg"
+    }
+  ]
+}Get a workflowGets a specific workflow. You can replace workflow_id with the workflow
+file name. For example, you could use main.yaml.
+Anyone with read access to the repository can use this endpoint.
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint with a private repository.Fine-grained access tokens for "Get a workflow"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:actions:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "Get a workflow"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.workflow_id  RequiredThe ID of the workflow. You can also pass the workflow file name as a string.HTTP response status codes for "Get a workflow"Status codeDescription200OKCode samples for "Get a workflow"Request exampleget/repos/{owner}/{repo}/actions/workflows/{workflow_id}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/actions/workflows/WORKFLOW_IDResponseExample responseResponse schemaStatus: 200{
+  "id": 161335,
+  "node_id": "MDg6V29ya2Zsb3cxNjEzMzU=",
+  "name": "CI",
+  "path": ".github/workflows/blank.yaml",
+  "state": "active",
+  "created_at": "2020-01-08T23:48:37.000-08:00",
+  "updated_at": "2020-01-08T23:50:21.000-08:00",
+  "url": "https://api.github.com/repos/octo-org/octo-repo/actions/workflows/161335",
+  "html_url": "https://github.com/octo-org/octo-repo/blob/master/.github/workflows/161335",
+  "badge_url": "https://github.com/octo-org/octo-repo/workflows/CI/badge.svg"
+}Disable a workflowDisables a workflow and sets the state of the workflow to disabled_manually. You can replace workflow_id with the workflow file name. For example, you could use main.yaml.
+OAuth tokens and personal access tokens (classic) need the repo scope to use this endpoint.Fine-grained access tokens for "Disable a workflow"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:actions:writeParameters for "Disable a workflow"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.workflow_id  RequiredThe ID of the workflow. You can also pass the workflow file name as a string.HTTP response status codes for "Disable a workflow"Status codeDescription204No ContentCode samples for "Disable a workflow"Request exampleput/repos/{owner}/{repo}/actions/workflows/{workflow_id}/disablecURLJavaScriptGitHub CLIcurl -L \
+  -X PUT \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/actions/workflows/WORKFLOW_ID/disableResponseStatus: 204Create a workflow dispatch eventYou can use this endpoint to manually trigger a GitHub Actions workflow run. You can replace workflow_id with the workflow file name. For example, you could use main.yaml.
+You must configure your GitHub Actions workflow to run when the workflow_dispatch webhook event occurs. The inputs are configured in the workflow file. For more information about how to configure the workflow_dispatch event in the workflow file, see "Events that trigger workflows."
+OAuth tokens and personal access tokens (classic) need the repo scope to use this endpoint.Fine-grained access tokens for "Create a workflow dispatch event"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:actions:writeParameters for "Create a workflow dispatch event"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.workflow_id  RequiredThe ID of the workflow. You can also pass the workflow file name as a string.Body parametersName, Type, Descriptionref string RequiredThe git reference for the workflow. The reference can be a branch or tag name.inputs object Input keys and values configured in the workflow file. The maximum number of properties is 10. Any default properties configured in the workflow file will be used when inputs are omitted.HTTP response status codes for "Create a workflow dispatch event"Status codeDescription204No ContentCode samples for "Create a workflow dispatch event"Request examplepost/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatchescURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/actions/workflows/WORKFLOW_ID/dispatches \
+  -d '{"ref":"topic-branch","inputs":{"name":"Mona the Octocat","home":"San Francisco, CA"}}'ResponseStatus: 204Enable a workflowEnables a workflow and sets the state of the workflow to active. You can replace workflow_id with the workflow file name. For example, you could use main.yaml.
+OAuth tokens and personal access tokens (classic) need the repo scope to use this endpoint.Fine-grained access tokens for "Enable a workflow"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:actions:writeParameters for "Enable a workflow"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.workflow_id  RequiredThe ID of the workflow. You can also pass the workflow file name as a string.HTTP response status codes for "Enable a workflow"Status codeDescription204No ContentCode samples for "Enable a workflow"Request exampleput/repos/{owner}/{repo}/actions/workflows/{workflow_id}/enablecURLJavaScriptGitHub CLIcurl -L \
+  -X PUT \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/actions/workflows/WORKFLOW_ID/enableResponseStatus: 204Get workflow usageGets the number of billable minutes used by a specific workflow during the current billing cycle. Billable minutes only apply to workflows in private repositories that use GitHub-hosted runners. Usage is listed for each GitHub-hosted runner operating system in milliseconds. Any job re-runs are also included in the usage. The usage does not include the multiplier for macOS and Windows runners and is not rounded up to the nearest whole minute. For more information, see "Managing billing for GitHub Actions".
+You can replace workflow_id with the workflow file name. For example, you could use main.yaml.
+Anyone with read access to the repository can use this endpoint.
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint with a private repository.Fine-grained access tokens for "Get workflow usage"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:actions:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "Get workflow usage"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.workflow_id  RequiredThe ID of the workflow. You can also pass the workflow file name as a string.HTTP response status codes for "Get workflow usage"Status codeDescription200OKCode samples for "Get workflow usage"Request exampleget/repos/{owner}/{repo}/actions/workflows/{workflow_id}/timingcURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/actions/workflows/WORKFLOW_ID/timingResponseExample responseResponse schemaStatus: 200{
+  "billable": {
+    "UBUNTU": {
+      "total_ms": 180000
+    },
+    "MACOS": {
+      "total_ms": 240000
+    },
+    "WINDOWS": {
+      "total_ms": 300000
+    }
+  }
+}

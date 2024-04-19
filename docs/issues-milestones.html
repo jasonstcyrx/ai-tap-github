@@ -1,0 +1,172 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Issues/MilestonesREST API endpoints for milestonesUse the REST API to manage milestones.List milestonesLists milestones for a repository.Fine-grained access tokens for "List milestones"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have at least one of the following permission sets:issues:readpull_requests:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "List milestones"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.Query parametersName, Type, Descriptionstate string The state of the milestone. Either open, closed, or all.Default: openCan be one of: open, closed, all sort string What to sort results by. Either due_on or completeness.Default: due_onCan be one of: due_on, completeness direction string The direction of the sort. Either asc or desc.Default: ascCan be one of: asc, desc per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List milestones"Status codeDescription200OK404Resource not foundCode samples for "List milestones"Request exampleget/repos/{owner}/{repo}/milestonescURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/milestonesResponseExample responseResponse schemaStatus: 200[
+  {
+    "url": "https://api.github.com/repos/octocat/Hello-World/milestones/1",
+    "html_url": "https://github.com/octocat/Hello-World/milestones/v1.0",
+    "labels_url": "https://api.github.com/repos/octocat/Hello-World/milestones/1/labels",
+    "id": 1002604,
+    "node_id": "MDk6TWlsZXN0b25lMTAwMjYwNA==",
+    "number": 1,
+    "state": "open",
+    "title": "v1.0",
+    "description": "Tracking milestone for version 1.0",
+    "creator": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "open_issues": 4,
+    "closed_issues": 8,
+    "created_at": "2011-04-10T20:09:31Z",
+    "updated_at": "2014-03-03T18:58:10Z",
+    "closed_at": "2013-02-12T13:22:01Z",
+    "due_on": "2012-10-09T23:39:01Z"
+  }
+]Create a milestoneCreates a milestone.Fine-grained access tokens for "Create a milestone"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have at least one of the following permission sets:issues:writepull_requests:writeParameters for "Create a milestone"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.Body parametersName, Type, Descriptiontitle string RequiredThe title of the milestone.state string The state of the milestone. Either open or closed.Default: openCan be one of: open, closed description string A description of the milestone.due_on string The milestone due date. This is a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ.HTTP response status codes for "Create a milestone"Status codeDescription201Created404Resource not found422Validation failed, or the endpoint has been spammed.Code samples for "Create a milestone"Request examplepost/repos/{owner}/{repo}/milestonescURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/milestones \
+  -d '{"title":"v1.0","state":"open","description":"Tracking milestone for version 1.0","due_on":"2012-10-09T23:39:01Z"}'ResponseExample responseResponse schemaStatus: 201{
+  "url": "https://api.github.com/repos/octocat/Hello-World/milestones/1",
+  "html_url": "https://github.com/octocat/Hello-World/milestones/v1.0",
+  "labels_url": "https://api.github.com/repos/octocat/Hello-World/milestones/1/labels",
+  "id": 1002604,
+  "node_id": "MDk6TWlsZXN0b25lMTAwMjYwNA==",
+  "number": 1,
+  "state": "open",
+  "title": "v1.0",
+  "description": "Tracking milestone for version 1.0",
+  "creator": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "open_issues": 4,
+  "closed_issues": 8,
+  "created_at": "2011-04-10T20:09:31Z",
+  "updated_at": "2014-03-03T18:58:10Z",
+  "closed_at": "2013-02-12T13:22:01Z",
+  "due_on": "2012-10-09T23:39:01Z"
+}Get a milestoneGets a milestone using the given milestone number.Fine-grained access tokens for "Get a milestone"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have at least one of the following permission sets:issues:readpull_requests:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "Get a milestone"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.milestone_number integer RequiredThe number that identifies the milestone.HTTP response status codes for "Get a milestone"Status codeDescription200OK404Resource not foundCode samples for "Get a milestone"Request exampleget/repos/{owner}/{repo}/milestones/{milestone_number}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/milestones/MILESTONE_NUMBERResponseExample responseResponse schemaStatus: 200{
+  "url": "https://api.github.com/repos/octocat/Hello-World/milestones/1",
+  "html_url": "https://github.com/octocat/Hello-World/milestones/v1.0",
+  "labels_url": "https://api.github.com/repos/octocat/Hello-World/milestones/1/labels",
+  "id": 1002604,
+  "node_id": "MDk6TWlsZXN0b25lMTAwMjYwNA==",
+  "number": 1,
+  "state": "open",
+  "title": "v1.0",
+  "description": "Tracking milestone for version 1.0",
+  "creator": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "open_issues": 4,
+  "closed_issues": 8,
+  "created_at": "2011-04-10T20:09:31Z",
+  "updated_at": "2014-03-03T18:58:10Z",
+  "closed_at": "2013-02-12T13:22:01Z",
+  "due_on": "2012-10-09T23:39:01Z"
+}Update a milestoneFine-grained access tokens for "Update a milestone"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have at least one of the following permission sets:issues:writepull_requests:writeParameters for "Update a milestone"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.milestone_number integer RequiredThe number that identifies the milestone.Body parametersName, Type, Descriptiontitle string The title of the milestone.state string The state of the milestone. Either open or closed.Default: openCan be one of: open, closed description string A description of the milestone.due_on string The milestone due date. This is a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ.HTTP response status codes for "Update a milestone"Status codeDescription200OKCode samples for "Update a milestone"Request examplepatch/repos/{owner}/{repo}/milestones/{milestone_number}cURLJavaScriptGitHub CLIcurl -L \
+  -X PATCH \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/milestones/MILESTONE_NUMBER \
+  -d '{"title":"v1.0","state":"open","description":"Tracking milestone for version 1.0","due_on":"2012-10-09T23:39:01Z"}'ResponseExample responseResponse schemaStatus: 200{
+  "url": "https://api.github.com/repos/octocat/Hello-World/milestones/1",
+  "html_url": "https://github.com/octocat/Hello-World/milestones/v1.0",
+  "labels_url": "https://api.github.com/repos/octocat/Hello-World/milestones/1/labels",
+  "id": 1002604,
+  "node_id": "MDk6TWlsZXN0b25lMTAwMjYwNA==",
+  "number": 1,
+  "state": "open",
+  "title": "v1.0",
+  "description": "Tracking milestone for version 1.0",
+  "creator": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "open_issues": 4,
+  "closed_issues": 8,
+  "created_at": "2011-04-10T20:09:31Z",
+  "updated_at": "2014-03-03T18:58:10Z",
+  "closed_at": "2013-02-12T13:22:01Z",
+  "due_on": "2012-10-09T23:39:01Z"
+}Delete a milestoneDeletes a milestone using the given milestone number.Fine-grained access tokens for "Delete a milestone"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have at least one of the following permission sets:issues:writepull_requests:writeParameters for "Delete a milestone"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.milestone_number integer RequiredThe number that identifies the milestone.HTTP response status codes for "Delete a milestone"Status codeDescription204No Content404Resource not foundCode samples for "Delete a milestone"Request exampledelete/repos/{owner}/{repo}/milestones/{milestone_number}cURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/milestones/MILESTONE_NUMBERResponseStatus: 204

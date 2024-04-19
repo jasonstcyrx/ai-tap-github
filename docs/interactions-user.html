@@ -1,0 +1,31 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Interactions/UserREST API endpoints for user interactionsUse the REST API to temporarily restrict which type of user can comment, open issues, or create pull requests in your public repositories.About user interactions
+You can use the REST API to temporarily restrict which type of user can comment, open issues, or create pull requests on your public repositories. When restrictions are enabled, only the specified type of GitHub user will be able to participate in interactions. Restrictions automatically expire after a defined duration. Here's more about the types of GitHub users:
+
+Existing users: When you limit interactions to existing_users, new users with accounts less than 24 hours old who have not previously contributed and are not collaborators will be temporarily restricted from interacting with your repositories.
+Contributors only: When you limit interactions to contributors_only,  users who have not previously contributed and are not collaborators will be temporarily restricted from interacting with your repositories.
+Collaborators only: When you limit interactions to collaborators_only, users who are not collaborators will be temporarily restricted from interacting with your repositories.
+
+Setting the interaction limit at the user level will overwrite any interaction limits that are set for individual repositories owned by the user. To set different interaction limits for individual repositories owned by the user, use the Repository interactions endpoints instead.Get interaction restrictions for your public repositoriesShows which type of GitHub user can interact with your public repositories and when the restriction expires.Fine-grained access tokens for "Get interaction restrictions for your public repositories"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:interaction_limits:readHTTP response status codes for "Get interaction restrictions for your public repositories"Status codeDescription200Default response204Response when there are no restrictionsCode samples for "Get interaction restrictions for your public repositories"Request exampleget/user/interaction-limitscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/user/interaction-limitsDefault responseExample responseResponse schemaStatus: 200{
+  "limit": "collaborators_only",
+  "origin": "organization",
+  "expires_at": "2018-08-17T04:18:39Z"
+}Set interaction restrictions for your public repositoriesTemporarily restricts which type of GitHub user can interact with your public repositories. Setting the interaction limit at the user level will overwrite any interaction limits that are set for individual repositories owned by the user.Fine-grained access tokens for "Set interaction restrictions for your public repositories"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:interaction_limits:writeParameters for "Set interaction restrictions for your public repositories"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Body parametersName, Type, Descriptionlimit string RequiredThe type of GitHub user that can comment, open issues, or create pull requests while the interaction limit is in effect.Can be one of: existing_users, contributors_only, collaborators_only expiry string The duration of the interaction restriction. Default: one_day.Can be one of: one_day, three_days, one_week, one_month, six_months HTTP response status codes for "Set interaction restrictions for your public repositories"Status codeDescription200OK422Validation failed, or the endpoint has been spammed.Code samples for "Set interaction restrictions for your public repositories"Request exampleput/user/interaction-limitscURLJavaScriptGitHub CLIcurl -L \
+  -X PUT \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/user/interaction-limits \
+  -d '{"limit":"collaborators_only","expiry":"one_month"}'ResponseExample responseResponse schemaStatus: 200{
+  "limit": "collaborators_only",
+  "origin": "user",
+  "expires_at": "2018-08-17T04:18:39Z"
+}Remove interaction restrictions from your public repositoriesRemoves any interaction restrictions from your public repositories.Fine-grained access tokens for "Remove interaction restrictions from your public repositories"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:interaction_limits:writeHTTP response status codes for "Remove interaction restrictions from your public repositories"Status codeDescription204No ContentCode samples for "Remove interaction restrictions from your public repositories"Request exampledelete/user/interaction-limitscURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/user/interaction-limitsResponseStatus: 204

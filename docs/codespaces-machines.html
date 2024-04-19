@@ -1,0 +1,53 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Codespaces/MachinesREST API endpoints for Codespaces machinesUse the REST API to manage availability of machine types for a codespace.About Codespaces machines
+You can determine which machine types are available to create a codespace, either on a given repository or as an authenticated user. For more information, see "Changing the machine type for your codespace."
+You can also use this information when changing the machine of an existing codespace by updating its machine property. The machine update will take place the next time the codespace is restarted. For more information, see "Changing the machine type for your codespace."List available machine types for a repositoryList the machine types available for a given repository based on its configuration.
+OAuth app tokens and personal access tokens (classic) need the codespace scope to use this endpoint.Fine-grained access tokens for "List available machine types for a repository"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:codespaces_metadata:readParameters for "List available machine types for a repository"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.Query parametersName, Type, Descriptionlocation string The location to check for available machines. Assigned by IP if not provided.client_ip string IP for location auto-detection when proxying a requestref string The branch or commit to check for prebuild availability and devcontainer restrictions.HTTP response status codes for "List available machine types for a repository"Status codeDescription200OK304Not modified401Requires authentication403Forbidden404Resource not found500Internal ErrorCode samples for "List available machine types for a repository"Request exampleget/repos/{owner}/{repo}/codespaces/machinescURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/codespaces/machinesResponseExample responseResponse schemaStatus: 200{
+  "total_count": 2,
+  "machines": [
+    {
+      "name": "standardLinux",
+      "display_name": "4 cores, 16 GB RAM, 64 GB storage",
+      "operating_system": "linux",
+      "storage_in_bytes": 68719476736,
+      "memory_in_bytes": 17179869184,
+      "cpus": 4
+    },
+    {
+      "name": "premiumLinux",
+      "display_name": "8 cores, 32 GB RAM, 64 GB storage",
+      "operating_system": "linux",
+      "storage_in_bytes": 68719476736,
+      "memory_in_bytes": 34359738368,
+      "cpus": 8
+    }
+  ]
+}List machine types for a codespaceList the machine types a codespace can transition to use.
+OAuth app tokens and personal access tokens (classic) need the codespace scope to use this endpoint.Fine-grained access tokens for "List machine types for a codespace"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:codespaces_metadata:readParameters for "List machine types for a codespace"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptioncodespace_name string RequiredThe name of the codespace.HTTP response status codes for "List machine types for a codespace"Status codeDescription200OK304Not modified401Requires authentication403Forbidden404Resource not found500Internal ErrorCode samples for "List machine types for a codespace"Request exampleget/user/codespaces/{codespace_name}/machinescURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/user/codespaces/CODESPACE_NAME/machinesResponseExample responseResponse schemaStatus: 200{
+  "total_count": 2,
+  "machines": [
+    {
+      "name": "standardLinux",
+      "display_name": "4 cores, 16 GB RAM, 64 GB storage",
+      "operating_system": "linux",
+      "storage_in_bytes": 68719476736,
+      "memory_in_bytes": 17179869184,
+      "cpus": 4
+    },
+    {
+      "name": "premiumLinux",
+      "display_name": "8 cores, 32 GB RAM, 64 GB storage",
+      "operating_system": "linux",
+      "storage_in_bytes": 68719476736,
+      "memory_in_bytes": 34359738368,
+      "cpus": 8
+    }
+  ]
+}

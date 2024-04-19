@@ -1,0 +1,739 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Gists/GistsREST API endpoints for gistsUse the REST API to list, create, update and delete the public gists on GitHub.About gists
+You can use the REST API to view and modify gists. For more information about gists, see "Editing and sharing content with gists."
+Authentication
+You can read public gists  anonymously, but you must be signed into GitHub to create gists. To read or write gists on a user's behalf, you need the gist OAuth scope and a token. For more information, see "Scopes for OAuth apps."
+Truncation
+The API provides up to one megabyte of content for each file in the gist. Each file returned for a gist through the API has a key called truncated. If truncated is true, the file is too large and only a portion of the contents were returned in content.
+If you need the full contents of the file, you can make a GET request to the URL specified by raw_url. Be aware that for files larger than ten megabytes, you'll need to clone the gist via the URL provided by git_pull_url.
+In addition to a specific file's contents being truncated, the entire files list may be truncated if the total number exceeds 300 files. If the top level truncated key is true, only the first 300 files have been returned in the files list. If you need to fetch all of the gist's files, you'll need to clone the gist via the URL provided by git_pull_url.List gists for the authenticated userLists the authenticated user's gists or if called anonymously, this endpoint returns all public gists:Fine-grained access tokens for "List gists for the authenticated user"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token does not require any permissions.Parameters for "List gists for the authenticated user"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Query parametersName, Type, Descriptionsince string Only show results that were last updated after the given time. This is a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ.per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List gists for the authenticated user"Status codeDescription200OK304Not modified403ForbiddenCode samples for "List gists for the authenticated user"Request exampleget/gistscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gistsResponseExample responseResponse schemaStatus: 200[
+  {
+    "url": "https://api.github.com/gists/aa5a315d61ae9438b18d",
+    "forks_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/forks",
+    "commits_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/commits",
+    "id": "aa5a315d61ae9438b18d",
+    "node_id": "MDQ6R2lzdGFhNWEzMTVkNjFhZTk0MzhiMThk",
+    "git_pull_url": "https://gist.github.com/aa5a315d61ae9438b18d.git",
+    "git_push_url": "https://gist.github.com/aa5a315d61ae9438b18d.git",
+    "html_url": "https://gist.github.com/aa5a315d61ae9438b18d",
+    "files": {
+      "hello_world.rb": {
+        "filename": "hello_world.rb",
+        "type": "application/x-ruby",
+        "language": "Ruby",
+        "raw_url": "https://gist.githubusercontent.com/octocat/6cad326836d38bd3a7ae/raw/db9c55113504e46fa076e7df3a04ce592e2e86d8/hello_world.rb",
+        "size": 167
+      }
+    },
+    "public": true,
+    "created_at": "2010-04-14T02:15:15Z",
+    "updated_at": "2011-06-20T11:34:15Z",
+    "description": "Hello World Examples",
+    "comments": 0,
+    "user": null,
+    "comments_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/comments/",
+    "owner": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "truncated": false
+  }
+]Create a gistAllows you to add a new gist with one or more files.
+Note: Don't name your files "gistfile" with a numerical suffix. This is the format of the automatic naming scheme that Gist uses internally.Fine-grained access tokens for "Create a gist"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:gists:writeParameters for "Create a gist"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Body parametersName, Type, Descriptiondescription string Description of the gistfiles object RequiredNames and content for the files that make up the gistProperties of filesName, Type, Descriptionkey object A user-defined key to represent an item in files.Properties of keyName, Type, Descriptioncontent string RequiredContent of the filepublic boolean or string Flag indicating whether the gist is publicHTTP response status codes for "Create a gist"Status codeDescription201Created304Not modified403Forbidden404Resource not found422Validation failed, or the endpoint has been spammed.Code samples for "Create a gist"Request examplepost/gistscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gists \
+  -d '{"description":"Example of a gist","public":false,"files":{"README.md":{"content":"Hello World"}}}'ResponseExample responseResponse schemaStatus: 201{
+  "url": "https://api.github.com/gists/2decf6c462d9b4418f2",
+  "forks_url": "https://api.github.com/gists/2decf6c462d9b4418f2/forks",
+  "commits_url": "https://api.github.com/gists/2decf6c462d9b4418f2/commits",
+  "id": "2decf6c462d9b4418f2",
+  "node_id": "G_kwDOBhHyLdZDliNDQxOGYy",
+  "git_pull_url": "https://gist.github.com/2decf6c462d9b4418f2.git",
+  "git_push_url": "https://gist.github.com/2decf6c462d9b4418f2.git",
+  "html_url": "https://gist.github.com/2decf6c462d9b4418f2",
+  "files": {
+    "README.md": {
+      "filename": "README.md",
+      "type": "text/markdown",
+      "language": "Markdown",
+      "raw_url": "https://gist.githubusercontent.com/monalisa/2decf6c462d9b4418f2/raw/ac3e6daf176fafe73609fd000cd188e4472010fb/README.md",
+      "size": 23,
+      "truncated": false,
+      "content": "Hello world from GitHub"
+    }
+  },
+  "public": true,
+  "created_at": "2022-09-20T12:11:58Z",
+  "updated_at": "2022-09-21T10:28:06Z",
+  "description": "An updated gist description.",
+  "comments": 0,
+  "user": null,
+  "comments_url": "https://api.github.com/gists/2decf6c462d9b4418f2/comments",
+  "owner": {
+    "login": "monalisa",
+    "id": 104456405,
+    "node_id": "U_kgDOBhHyLQ",
+    "avatar_url": "https://avatars.githubusercontent.com/u/104456405?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/monalisa",
+    "html_url": "https://github.com/monalisa",
+    "followers_url": "https://api.github.com/users/monalisa/followers",
+    "following_url": "https://api.github.com/users/monalisa/following{/other_user}",
+    "gists_url": "https://api.github.com/users/monalisa/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/monalisa/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/monalisa/subscriptions",
+    "organizations_url": "https://api.github.com/users/monalisa/orgs",
+    "repos_url": "https://api.github.com/users/monalisa/repos",
+    "events_url": "https://api.github.com/users/monalisa/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/monalisa/received_events",
+    "type": "User",
+    "site_admin": true
+  },
+  "forks": [],
+  "history": [
+    {
+      "user": {
+        "login": "monalisa",
+        "id": 104456405,
+        "node_id": "U_kgyLQ",
+        "avatar_url": "https://avatars.githubusercontent.com/u/104456405?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/monalisa",
+        "html_url": "https://github.com/monalisa",
+        "followers_url": "https://api.github.com/users/monalisa/followers",
+        "following_url": "https://api.github.com/users/monalisa/following{/other_user}",
+        "gists_url": "https://api.github.com/users/monalisa/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/monalisa/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/monalisa/subscriptions",
+        "organizations_url": "https://api.github.com/users/monalisa/orgs",
+        "repos_url": "https://api.github.com/users/monalisa/repos",
+        "events_url": "https://api.github.com/users/monalisa/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/monalisa/received_events",
+        "type": "User",
+        "site_admin": true
+      },
+      "version": "468aac8caed5f0c3b859b8286968",
+      "committed_at": "2022-09-21T10:28:06Z",
+      "change_status": {
+        "total": 2,
+        "additions": 1,
+        "deletions": 1
+      },
+      "url": "https://api.github.com/gists/8481a81af6b7a2d418f2/468aac8caed5f0c3b859b8286968"
+    }
+  ],
+  "truncated": false
+}List public gistsList public gists sorted by most recently updated to least recently updated.
+Note: With pagination, you can fetch up to 3000 gists. For example, you can fetch 100 pages with 30 gists per page or 30 pages with 100 gists per page.Fine-grained access tokens for "List public gists"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token does not require any permissions.Parameters for "List public gists"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Query parametersName, Type, Descriptionsince string Only show results that were last updated after the given time. This is a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ.per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List public gists"Status codeDescription200OK304Not modified403Forbidden422Validation failed, or the endpoint has been spammed.Code samples for "List public gists"Request exampleget/gists/publiccURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gists/publicResponseExample responseResponse schemaStatus: 200[
+  {
+    "url": "https://api.github.com/gists/aa5a315d61ae9438b18d",
+    "forks_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/forks",
+    "commits_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/commits",
+    "id": "aa5a315d61ae9438b18d",
+    "node_id": "MDQ6R2lzdGFhNWEzMTVkNjFhZTk0MzhiMThk",
+    "git_pull_url": "https://gist.github.com/aa5a315d61ae9438b18d.git",
+    "git_push_url": "https://gist.github.com/aa5a315d61ae9438b18d.git",
+    "html_url": "https://gist.github.com/aa5a315d61ae9438b18d",
+    "files": {
+      "hello_world.rb": {
+        "filename": "hello_world.rb",
+        "type": "application/x-ruby",
+        "language": "Ruby",
+        "raw_url": "https://gist.githubusercontent.com/octocat/6cad326836d38bd3a7ae/raw/db9c55113504e46fa076e7df3a04ce592e2e86d8/hello_world.rb",
+        "size": 167
+      }
+    },
+    "public": true,
+    "created_at": "2010-04-14T02:15:15Z",
+    "updated_at": "2011-06-20T11:34:15Z",
+    "description": "Hello World Examples",
+    "comments": 0,
+    "user": null,
+    "comments_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/comments/",
+    "owner": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "truncated": false
+  }
+]List starred gistsList the authenticated user's starred gists:Fine-grained access tokens for "List starred gists"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token does not require any permissions.Parameters for "List starred gists"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Query parametersName, Type, Descriptionsince string Only show results that were last updated after the given time. This is a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ.per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List starred gists"Status codeDescription200OK304Not modified401Requires authentication403ForbiddenCode samples for "List starred gists"Request exampleget/gists/starredcURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gists/starredResponseExample responseResponse schemaStatus: 200[
+  {
+    "url": "https://api.github.com/gists/aa5a315d61ae9438b18d",
+    "forks_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/forks",
+    "commits_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/commits",
+    "id": "aa5a315d61ae9438b18d",
+    "node_id": "MDQ6R2lzdGFhNWEzMTVkNjFhZTk0MzhiMThk",
+    "git_pull_url": "https://gist.github.com/aa5a315d61ae9438b18d.git",
+    "git_push_url": "https://gist.github.com/aa5a315d61ae9438b18d.git",
+    "html_url": "https://gist.github.com/aa5a315d61ae9438b18d",
+    "files": {
+      "hello_world.rb": {
+        "filename": "hello_world.rb",
+        "type": "application/x-ruby",
+        "language": "Ruby",
+        "raw_url": "https://gist.githubusercontent.com/octocat/6cad326836d38bd3a7ae/raw/db9c55113504e46fa076e7df3a04ce592e2e86d8/hello_world.rb",
+        "size": 167
+      }
+    },
+    "public": true,
+    "created_at": "2010-04-14T02:15:15Z",
+    "updated_at": "2011-06-20T11:34:15Z",
+    "description": "Hello World Examples",
+    "comments": 0,
+    "user": null,
+    "comments_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/comments/",
+    "owner": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "truncated": false
+  }
+]Get a gistGets a specified gist.
+This endpoint supports the following custom media types. For more information, see "Media types."
+
+application/vnd.github.raw+json: Returns the raw markdown. This is the default if you do not pass any specific media type.
+application/vnd.github.base64+json: Returns the base64-encoded contents. This can be useful if your gist contains any invalid UTF-8 sequences.
+Fine-grained access tokens for "Get a gist"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token does not require any permissions.Parameters for "Get a gist"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptiongist_id string RequiredThe unique identifier of the gist.HTTP response status codes for "Get a gist"Status codeDescription200OK304Not modified403Forbidden Gist404Resource not foundCode samples for "Get a gist"Request exampleget/gists/{gist_id}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gists/GIST_IDResponseExample responseResponse schemaStatus: 200{
+  "url": "https://api.github.com/gists/2decf6c462d9b4418f2",
+  "forks_url": "https://api.github.com/gists/2decf6c462d9b4418f2/forks",
+  "commits_url": "https://api.github.com/gists/2decf6c462d9b4418f2/commits",
+  "id": "2decf6c462d9b4418f2",
+  "node_id": "G_kwDOBhHyLdZDliNDQxOGYy",
+  "git_pull_url": "https://gist.github.com/2decf6c462d9b4418f2.git",
+  "git_push_url": "https://gist.github.com/2decf6c462d9b4418f2.git",
+  "html_url": "https://gist.github.com/2decf6c462d9b4418f2",
+  "files": {
+    "README.md": {
+      "filename": "README.md",
+      "type": "text/markdown",
+      "language": "Markdown",
+      "raw_url": "https://gist.githubusercontent.com/monalisa/2decf6c462d9b4418f2/raw/ac3e6daf176fafe73609fd000cd188e4472010fb/README.md",
+      "size": 23,
+      "truncated": false,
+      "content": "Hello world from GitHub"
+    }
+  },
+  "public": true,
+  "created_at": "2022-09-20T12:11:58Z",
+  "updated_at": "2022-09-21T10:28:06Z",
+  "description": "An updated gist description.",
+  "comments": 0,
+  "user": null,
+  "comments_url": "https://api.github.com/gists/2decf6c462d9b4418f2/comments",
+  "owner": {
+    "login": "monalisa",
+    "id": 104456405,
+    "node_id": "U_kgDOBhHyLQ",
+    "avatar_url": "https://avatars.githubusercontent.com/u/104456405?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/monalisa",
+    "html_url": "https://github.com/monalisa",
+    "followers_url": "https://api.github.com/users/monalisa/followers",
+    "following_url": "https://api.github.com/users/monalisa/following{/other_user}",
+    "gists_url": "https://api.github.com/users/monalisa/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/monalisa/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/monalisa/subscriptions",
+    "organizations_url": "https://api.github.com/users/monalisa/orgs",
+    "repos_url": "https://api.github.com/users/monalisa/repos",
+    "events_url": "https://api.github.com/users/monalisa/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/monalisa/received_events",
+    "type": "User",
+    "site_admin": true
+  },
+  "forks": [],
+  "history": [
+    {
+      "user": {
+        "login": "monalisa",
+        "id": 104456405,
+        "node_id": "U_kgyLQ",
+        "avatar_url": "https://avatars.githubusercontent.com/u/104456405?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/monalisa",
+        "html_url": "https://github.com/monalisa",
+        "followers_url": "https://api.github.com/users/monalisa/followers",
+        "following_url": "https://api.github.com/users/monalisa/following{/other_user}",
+        "gists_url": "https://api.github.com/users/monalisa/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/monalisa/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/monalisa/subscriptions",
+        "organizations_url": "https://api.github.com/users/monalisa/orgs",
+        "repos_url": "https://api.github.com/users/monalisa/repos",
+        "events_url": "https://api.github.com/users/monalisa/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/monalisa/received_events",
+        "type": "User",
+        "site_admin": true
+      },
+      "version": "468aac8caed5f0c3b859b8286968",
+      "committed_at": "2022-09-21T10:28:06Z",
+      "change_status": {
+        "total": 2,
+        "additions": 1,
+        "deletions": 1
+      },
+      "url": "https://api.github.com/gists/8481a81af6b7a2d418f2/468aac8caed5f0c3b859b8286968"
+    }
+  ],
+  "truncated": false
+}Update a gistAllows you to update a gist's description and to update, delete, or rename gist files. Files
+from the previous version of the gist that aren't explicitly changed during an edit
+are unchanged.
+At least one of description or files is required.
+This endpoint supports the following custom media types. For more information, see "Media types."
+
+application/vnd.github.raw+json: Returns the raw markdown. This is the default if you do not pass any specific media type.
+application/vnd.github.base64+json: Returns the base64-encoded contents. This can be useful if your gist contains any invalid UTF-8 sequences.
+Fine-grained access tokens for "Update a gist"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:gists:writeParameters for "Update a gist"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptiongist_id string RequiredThe unique identifier of the gist.Body parametersName, Type, Descriptiondescription string The description of the gist.files object The gist files to be updated, renamed, or deleted. Each key must match the current filename
+(including extension) of the targeted gist file. For example: hello.py.
+To delete a file, set the whole file to null. For example: hello.py : null. The file will also be
+deleted if the specified object does not contain at least one of content or filename.Properties of filesName, Type, Descriptionkey object A user-defined key to represent an item in files.Properties of keyName, Type, Descriptioncontent string The new content of the file.filename string or null The new filename for the file.HTTP response status codes for "Update a gist"Status codeDescription200OK404Resource not found422Validation failed, or the endpoint has been spammed.Code samples for "Update a gist"Request examplesSelect the example typeUpdating a gistDeleting a gist fileRenaming a gist filepatch/gists/{gist_id}cURLJavaScriptGitHub CLIcurl -L \
+  -X PATCH \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gists/GIST_ID \
+  -d '{"description":"An updated gist description","files":{"README.md":{"content":"Hello World from GitHub"}}}'ResponseExample responseResponse schemaStatus: 200{
+  "url": "https://api.github.com/gists/2decf6c462d9b4418f2",
+  "forks_url": "https://api.github.com/gists/2decf6c462d9b4418f2/forks",
+  "commits_url": "https://api.github.com/gists/2decf6c462d9b4418f2/commits",
+  "id": "2decf6c462d9b4418f2",
+  "node_id": "G_kwDOBhHyLdZDliNDQxOGYy",
+  "git_pull_url": "https://gist.github.com/2decf6c462d9b4418f2.git",
+  "git_push_url": "https://gist.github.com/2decf6c462d9b4418f2.git",
+  "html_url": "https://gist.github.com/2decf6c462d9b4418f2",
+  "files": {
+    "README.md": {
+      "filename": "README.md",
+      "type": "text/markdown",
+      "language": "Markdown",
+      "raw_url": "https://gist.githubusercontent.com/monalisa/2decf6c462d9b4418f2/raw/ac3e6daf176fafe73609fd000cd188e4472010fb/README.md",
+      "size": 23,
+      "truncated": false,
+      "content": "Hello world from GitHub"
+    }
+  },
+  "public": true,
+  "created_at": "2022-09-20T12:11:58Z",
+  "updated_at": "2022-09-21T10:28:06Z",
+  "description": "An updated gist description.",
+  "comments": 0,
+  "user": null,
+  "comments_url": "https://api.github.com/gists/2decf6c462d9b4418f2/comments",
+  "owner": {
+    "login": "monalisa",
+    "id": 104456405,
+    "node_id": "U_kgDOBhHyLQ",
+    "avatar_url": "https://avatars.githubusercontent.com/u/104456405?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/monalisa",
+    "html_url": "https://github.com/monalisa",
+    "followers_url": "https://api.github.com/users/monalisa/followers",
+    "following_url": "https://api.github.com/users/monalisa/following{/other_user}",
+    "gists_url": "https://api.github.com/users/monalisa/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/monalisa/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/monalisa/subscriptions",
+    "organizations_url": "https://api.github.com/users/monalisa/orgs",
+    "repos_url": "https://api.github.com/users/monalisa/repos",
+    "events_url": "https://api.github.com/users/monalisa/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/monalisa/received_events",
+    "type": "User",
+    "site_admin": true
+  },
+  "forks": [],
+  "history": [
+    {
+      "user": {
+        "login": "monalisa",
+        "id": 104456405,
+        "node_id": "U_kgyLQ",
+        "avatar_url": "https://avatars.githubusercontent.com/u/104456405?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/monalisa",
+        "html_url": "https://github.com/monalisa",
+        "followers_url": "https://api.github.com/users/monalisa/followers",
+        "following_url": "https://api.github.com/users/monalisa/following{/other_user}",
+        "gists_url": "https://api.github.com/users/monalisa/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/monalisa/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/monalisa/subscriptions",
+        "organizations_url": "https://api.github.com/users/monalisa/orgs",
+        "repos_url": "https://api.github.com/users/monalisa/repos",
+        "events_url": "https://api.github.com/users/monalisa/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/monalisa/received_events",
+        "type": "User",
+        "site_admin": true
+      },
+      "version": "468aac8caed5f0c3b859b8286968",
+      "committed_at": "2022-09-21T10:28:06Z",
+      "change_status": {
+        "total": 2,
+        "additions": 1,
+        "deletions": 1
+      },
+      "url": "https://api.github.com/gists/8481a81af6b7a2d418f2/468aac8caed5f0c3b859b8286968"
+    }
+  ],
+  "truncated": false
+}Delete a gistFine-grained access tokens for "Delete a gist"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:gists:writeParameters for "Delete a gist"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptiongist_id string RequiredThe unique identifier of the gist.HTTP response status codes for "Delete a gist"Status codeDescription204No Content304Not modified403Forbidden404Resource not foundCode samples for "Delete a gist"Request exampledelete/gists/{gist_id}cURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gists/GIST_IDResponseStatus: 204List gist commitsFine-grained access tokens for "List gist commits"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token does not require any permissions.Parameters for "List gist commits"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptiongist_id string RequiredThe unique identifier of the gist.Query parametersName, Type, Descriptionper_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List gist commits"Status codeDescription200OK304Not modified403Forbidden404Resource not foundCode samples for "List gist commits"Request exampleget/gists/{gist_id}/commitscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gists/GIST_ID/commitsResponseExample responseResponse schemaStatus: 200[
+  {
+    "url": "https://api.github.com/gists/aa5a315d61ae9438b18d/57a7f021a713b1c5a6a199b54cc514735d2d462f",
+    "version": "57a7f021a713b1c5a6a199b54cc514735d2d462f",
+    "user": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "change_status": {
+      "deletions": 0,
+      "additions": 180,
+      "total": 180
+    },
+    "committed_at": "2010-04-14T02:15:15Z"
+  }
+]List gist forksFine-grained access tokens for "List gist forks"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token does not require any permissions.Parameters for "List gist forks"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptiongist_id string RequiredThe unique identifier of the gist.Query parametersName, Type, Descriptionper_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List gist forks"Status codeDescription200OK304Not modified403Forbidden404Resource not foundCode samples for "List gist forks"Request exampleget/gists/{gist_id}/forkscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gists/GIST_ID/forksResponseExample responseResponse schemaStatus: 200[
+  {
+    "url": "https://api.github.com/gists/aa5a315d61ae9438b18d",
+    "forks_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/forks",
+    "commits_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/commits",
+    "id": "aa5a315d61ae9438b18d",
+    "node_id": "MDQ6R2lzdGFhNWEzMTVkNjFhZTk0MzhiMThk",
+    "git_pull_url": "https://gist.github.com/aa5a315d61ae9438b18d.git",
+    "git_push_url": "https://gist.github.com/aa5a315d61ae9438b18d.git",
+    "html_url": "https://gist.github.com/aa5a315d61ae9438b18d",
+    "files": {
+      "hello_world.rb": {
+        "filename": "hello_world.rb",
+        "type": "application/x-ruby",
+        "language": "Ruby",
+        "raw_url": "https://gist.githubusercontent.com/octocat/6cad326836d38bd3a7ae/raw/db9c55113504e46fa076e7df3a04ce592e2e86d8/hello_world.rb",
+        "size": 167
+      }
+    },
+    "public": true,
+    "created_at": "2010-04-14T02:15:15Z",
+    "updated_at": "2011-06-20T11:34:15Z",
+    "description": "Hello World Examples",
+    "comments": 1,
+    "user": null,
+    "comments_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/comments/",
+    "owner": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    }
+  }
+]Fork a gistFine-grained access tokens for "Fork a gist"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:gists:writeParameters for "Fork a gist"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptiongist_id string RequiredThe unique identifier of the gist.HTTP response status codes for "Fork a gist"Status codeDescription201Created304Not modified403Forbidden404Resource not found422Validation failed, or the endpoint has been spammed.Code samples for "Fork a gist"Request examplepost/gists/{gist_id}/forkscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gists/GIST_ID/forksResponseExample responseResponse schemaStatus: 201{
+  "url": "https://api.github.com/gists/aa5a315d61ae9438b18d",
+  "forks_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/forks",
+  "commits_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/commits",
+  "id": "aa5a315d61ae9438b18d",
+  "node_id": "MDQ6R2lzdGFhNWEzMTVkNjFhZTk0MzhiMThk",
+  "git_pull_url": "https://gist.github.com/aa5a315d61ae9438b18d.git",
+  "git_push_url": "https://gist.github.com/aa5a315d61ae9438b18d.git",
+  "html_url": "https://gist.github.com/aa5a315d61ae9438b18d",
+  "files": {
+    "hello_world.rb": {
+      "filename": "hello_world.rb",
+      "type": "application/x-ruby",
+      "language": "Ruby",
+      "raw_url": "https://gist.githubusercontent.com/octocat/6cad326836d38bd3a7ae/raw/db9c55113504e46fa076e7df3a04ce592e2e86d8/hello_world.rb",
+      "size": 167
+    }
+  },
+  "public": true,
+  "created_at": "2010-04-14T02:15:15Z",
+  "updated_at": "2011-06-20T11:34:15Z",
+  "description": "Hello World Examples",
+  "comments": 0,
+  "user": null,
+  "comments_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/comments/",
+  "owner": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "truncated": false
+}Check if a gist is starredFine-grained access tokens for "Check if a gist is starred"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token does not require any permissions.Parameters for "Check if a gist is starred"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptiongist_id string RequiredThe unique identifier of the gist.HTTP response status codes for "Check if a gist is starred"Status codeDescription204Response if gist is starred304Not modified403Forbidden404Not Found if gist is not starredCode samples for "Check if a gist is starred"Request exampleget/gists/{gist_id}/starcURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gists/GIST_ID/starResponse if gist is starredStatus: 204Star a gistNote that you'll need to set Content-Length to zero when calling out to this endpoint. For more information, see "HTTP method."Fine-grained access tokens for "Star a gist"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:gists:writeParameters for "Star a gist"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptiongist_id string RequiredThe unique identifier of the gist.HTTP response status codes for "Star a gist"Status codeDescription204No Content304Not modified403Forbidden404Resource not foundCode samples for "Star a gist"Request exampleput/gists/{gist_id}/starcURLJavaScriptGitHub CLIcurl -L \
+  -X PUT \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gists/GIST_ID/starResponseStatus: 204Unstar a gistFine-grained access tokens for "Unstar a gist"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token must have the following permission set:gists:writeParameters for "Unstar a gist"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptiongist_id string RequiredThe unique identifier of the gist.HTTP response status codes for "Unstar a gist"Status codeDescription204No Content304Not modified403Forbidden404Resource not foundCode samples for "Unstar a gist"Request exampledelete/gists/{gist_id}/starcURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gists/GIST_ID/starResponseStatus: 204Get a gist revisionGets a specified gist revision.
+This endpoint supports the following custom media types. For more information, see "Media types."
+
+application/vnd.github.raw+json: Returns the raw markdown. This is the default if you do not pass any specific media type.
+application/vnd.github.base64+json: Returns the base64-encoded contents. This can be useful if your gist contains any invalid UTF-8 sequences.
+Fine-grained access tokens for "Get a gist revision"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token does not require any permissions.Parameters for "Get a gist revision"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptiongist_id string RequiredThe unique identifier of the gist.sha string RequiredHTTP response status codes for "Get a gist revision"Status codeDescription200OK403Forbidden404Resource not found422Validation failed, or the endpoint has been spammed.Code samples for "Get a gist revision"Request exampleget/gists/{gist_id}/{sha}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/gists/GIST_ID/SHAResponseExample responseResponse schemaStatus: 200{
+  "url": "https://api.github.com/gists/2decf6c462d9b4418f2",
+  "forks_url": "https://api.github.com/gists/2decf6c462d9b4418f2/forks",
+  "commits_url": "https://api.github.com/gists/2decf6c462d9b4418f2/commits",
+  "id": "2decf6c462d9b4418f2",
+  "node_id": "G_kwDOBhHyLdZDliNDQxOGYy",
+  "git_pull_url": "https://gist.github.com/2decf6c462d9b4418f2.git",
+  "git_push_url": "https://gist.github.com/2decf6c462d9b4418f2.git",
+  "html_url": "https://gist.github.com/2decf6c462d9b4418f2",
+  "files": {
+    "README.md": {
+      "filename": "README.md",
+      "type": "text/markdown",
+      "language": "Markdown",
+      "raw_url": "https://gist.githubusercontent.com/monalisa/2decf6c462d9b4418f2/raw/ac3e6daf176fafe73609fd000cd188e4472010fb/README.md",
+      "size": 23,
+      "truncated": false,
+      "content": "Hello world from GitHub"
+    }
+  },
+  "public": true,
+  "created_at": "2022-09-20T12:11:58Z",
+  "updated_at": "2022-09-21T10:28:06Z",
+  "description": "An updated gist description.",
+  "comments": 0,
+  "user": null,
+  "comments_url": "https://api.github.com/gists/2decf6c462d9b4418f2/comments",
+  "owner": {
+    "login": "monalisa",
+    "id": 104456405,
+    "node_id": "U_kgDOBhHyLQ",
+    "avatar_url": "https://avatars.githubusercontent.com/u/104456405?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/monalisa",
+    "html_url": "https://github.com/monalisa",
+    "followers_url": "https://api.github.com/users/monalisa/followers",
+    "following_url": "https://api.github.com/users/monalisa/following{/other_user}",
+    "gists_url": "https://api.github.com/users/monalisa/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/monalisa/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/monalisa/subscriptions",
+    "organizations_url": "https://api.github.com/users/monalisa/orgs",
+    "repos_url": "https://api.github.com/users/monalisa/repos",
+    "events_url": "https://api.github.com/users/monalisa/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/monalisa/received_events",
+    "type": "User",
+    "site_admin": true
+  },
+  "forks": [],
+  "history": [
+    {
+      "user": {
+        "login": "monalisa",
+        "id": 104456405,
+        "node_id": "U_kgyLQ",
+        "avatar_url": "https://avatars.githubusercontent.com/u/104456405?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/monalisa",
+        "html_url": "https://github.com/monalisa",
+        "followers_url": "https://api.github.com/users/monalisa/followers",
+        "following_url": "https://api.github.com/users/monalisa/following{/other_user}",
+        "gists_url": "https://api.github.com/users/monalisa/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/monalisa/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/monalisa/subscriptions",
+        "organizations_url": "https://api.github.com/users/monalisa/orgs",
+        "repos_url": "https://api.github.com/users/monalisa/repos",
+        "events_url": "https://api.github.com/users/monalisa/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/monalisa/received_events",
+        "type": "User",
+        "site_admin": true
+      },
+      "version": "468aac8caed5f0c3b859b8286968",
+      "committed_at": "2022-09-21T10:28:06Z",
+      "change_status": {
+        "total": 2,
+        "additions": 1,
+        "deletions": 1
+      },
+      "url": "https://api.github.com/gists/8481a81af6b7a2d418f2/468aac8caed5f0c3b859b8286968"
+    }
+  ],
+  "truncated": false
+}List gists for a userLists public gists for the specified user:Fine-grained access tokens for "List gists for a user"This endpoint works with the following token types:GitHub App user access tokensFine-grained personal access tokensThe token does not require any permissions.Parameters for "List gists for a user"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionusername string RequiredThe handle for the GitHub user account.Query parametersName, Type, Descriptionsince string Only show results that were last updated after the given time. This is a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ.per_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List gists for a user"Status codeDescription200OK422Validation failed, or the endpoint has been spammed.Code samples for "List gists for a user"Request exampleget/users/{username}/gistscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/users/USERNAME/gistsResponseExample responseResponse schemaStatus: 200[
+  {
+    "url": "https://api.github.com/gists/aa5a315d61ae9438b18d",
+    "forks_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/forks",
+    "commits_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/commits",
+    "id": "aa5a315d61ae9438b18d",
+    "node_id": "MDQ6R2lzdGFhNWEzMTVkNjFhZTk0MzhiMThk",
+    "git_pull_url": "https://gist.github.com/aa5a315d61ae9438b18d.git",
+    "git_push_url": "https://gist.github.com/aa5a315d61ae9438b18d.git",
+    "html_url": "https://gist.github.com/aa5a315d61ae9438b18d",
+    "files": {
+      "hello_world.rb": {
+        "filename": "hello_world.rb",
+        "type": "application/x-ruby",
+        "language": "Ruby",
+        "raw_url": "https://gist.githubusercontent.com/octocat/6cad326836d38bd3a7ae/raw/db9c55113504e46fa076e7df3a04ce592e2e86d8/hello_world.rb",
+        "size": 167
+      }
+    },
+    "public": true,
+    "created_at": "2010-04-14T02:15:15Z",
+    "updated_at": "2011-06-20T11:34:15Z",
+    "description": "Hello World Examples",
+    "comments": 0,
+    "user": null,
+    "comments_url": "https://api.github.com/gists/aa5a315d61ae9438b18d/comments/",
+    "owner": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "truncated": false
+  }
+]

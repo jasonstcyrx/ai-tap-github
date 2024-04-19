@@ -1,0 +1,277 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Pages/PagesREST API endpoints for GitHub PagesUse the REST API to interact with GitHub Pages sites and builds.Get a GitHub Pages siteGets information about a GitHub Pages site.
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint.Fine-grained access tokens for "Get a GitHub Pages site"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:pages:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "Get a GitHub Pages site"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.HTTP response status codes for "Get a GitHub Pages site"Status codeDescription200OK404Resource not foundCode samples for "Get a GitHub Pages site"Request exampleget/repos/{owner}/{repo}/pagescURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/pagesResponseExample responseResponse schemaStatus: 200{
+  "url": "https://api.github.com/repos/github/developer.github.com/pages",
+  "status": "built",
+  "cname": "developer.github.com",
+  "custom_404": false,
+  "html_url": "https://developer.github.com",
+  "source": {
+    "branch": "master",
+    "path": "/"
+  },
+  "public": true,
+  "https_certificate": {
+    "state": "approved",
+    "description": "Certificate is approved",
+    "domains": [
+      "developer.github.com"
+    ],
+    "expires_at": "2021-05-22"
+  },
+  "https_enforced": true
+}Create a GitHub Pages siteConfigures a GitHub Pages site. For more information, see "About GitHub Pages."
+The authenticated user must be a repository administrator, maintainer, or have the 'manage GitHub Pages settings' permission.
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint.Fine-grained access tokens for "Create a GitHub Pages site"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:pages:write and administration:writeParameters for "Create a GitHub Pages site"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.Body parametersName, Type, Descriptionbuild_type string The process in which the Page will be built. Possible values are "legacy" and "workflow".Can be one of: legacy, workflow source object The source branch and directory used to publish your Pages site.Properties of sourceName, Type, Descriptionbranch string RequiredThe repository branch used to publish your site's source files.path string The repository directory that includes the source files for the Pages site. Allowed paths are / or /docs. Default: /Default: /Can be one of: /, /docs HTTP response status codes for "Create a GitHub Pages site"Status codeDescription201Created409Conflict422Validation failed, or the endpoint has been spammed.Code samples for "Create a GitHub Pages site"Request examplepost/repos/{owner}/{repo}/pagescURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/pages \
+  -d '{"source":{"branch":"main","path":"/docs"}}'ResponseExample responseResponse schemaStatus: 201{
+  "url": "https://api.github.com/repos/github/developer.github.com/pages",
+  "status": "built",
+  "cname": "developer.github.com",
+  "custom_404": false,
+  "html_url": "https://developer.github.com",
+  "source": {
+    "branch": "master",
+    "path": "/"
+  },
+  "public": true,
+  "https_certificate": {
+    "state": "approved",
+    "description": "Certificate is approved",
+    "domains": [
+      "developer.github.com"
+    ],
+    "expires_at": "2021-05-22"
+  },
+  "https_enforced": true
+}Update information about a GitHub Pages siteUpdates information for a GitHub Pages site. For more information, see "About GitHub Pages.
+The authenticated user must be a repository administrator, maintainer, or have the 'manage GitHub Pages settings' permission.
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint.Fine-grained access tokens for "Update information about a GitHub Pages site"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:pages:write and administration:writeParameters for "Update information about a GitHub Pages site"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.Body parametersName, Type, Descriptioncname string or null Specify a custom domain for the repository. Sending a null value will remove the custom domain. For more about custom domains, see "Using a custom domain with GitHub Pages."https_enforced boolean Specify whether HTTPS should be enforced for the repository.build_type string The process by which the GitHub Pages site will be built. workflow means that the site is built by a custom GitHub Actions workflow. legacy means that the site is built by GitHub when changes are pushed to a specific branch.Can be one of: legacy, workflow source object Update the source for the repository. Must include the branch name and path.Properties of sourceName, Type, Descriptionbranch string RequiredThe repository branch used to publish your site's source files.path string RequiredThe repository directory that includes the source files for the Pages site. Allowed paths are / or /docs.Can be one of: /, /docs HTTP response status codes for "Update information about a GitHub Pages site"Status codeDescription204No Content400Bad Request409Conflict422Validation failed, or the endpoint has been spammed.Code samples for "Update information about a GitHub Pages site"Request exampleput/repos/{owner}/{repo}/pagescURLJavaScriptGitHub CLIcurl -L \
+  -X PUT \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/pages \
+  -d '{"cname":"octocatblog.com","source":{"branch":"main","path":"/"}}'ResponseStatus: 204Delete a GitHub Pages siteDeletes a GitHub Pages site. For more information, see "About GitHub Pages.
+The authenticated user must be a repository administrator, maintainer, or have the 'manage GitHub Pages settings' permission.
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint.Fine-grained access tokens for "Delete a GitHub Pages site"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:pages:write and administration:writeParameters for "Delete a GitHub Pages site"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.HTTP response status codes for "Delete a GitHub Pages site"Status codeDescription204No Content404Resource not found409Conflict422Validation failed, or the endpoint has been spammed.Code samples for "Delete a GitHub Pages site"Request exampledelete/repos/{owner}/{repo}/pagescURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/pagesResponseStatus: 204List GitHub Pages buildsLists builts of a GitHub Pages site.
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint.Fine-grained access tokens for "List GitHub Pages builds"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:pages:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "List GitHub Pages builds"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.Query parametersName, Type, Descriptionper_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List GitHub Pages builds"Status codeDescription200OKCode samples for "List GitHub Pages builds"Request exampleget/repos/{owner}/{repo}/pages/buildscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/pages/buildsResponseExample responseResponse schemaStatus: 200[
+  {
+    "url": "https://api.github.com/repos/github/developer.github.com/pages/builds/5472601",
+    "status": "built",
+    "error": {
+      "message": null
+    },
+    "pusher": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "commit": "351391cdcb88ffae71ec3028c91f375a8036a26b",
+    "duration": 2104,
+    "created_at": "2014-02-10T19:00:49Z",
+    "updated_at": "2014-02-10T19:00:51Z"
+  }
+]Request a GitHub Pages buildYou can request that your site be built from the latest revision on the default branch. This has the same effect as pushing a commit to your default branch, but does not require an additional commit. Manually triggering page builds can be helpful when diagnosing build warnings and failures.
+Build requests are limited to one concurrent build per repository and one concurrent build per requester. If you request a build while another is still in progress, the second request will be queued until the first completes.Fine-grained access tokens for "Request a GitHub Pages build"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:pages:writeParameters for "Request a GitHub Pages build"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.HTTP response status codes for "Request a GitHub Pages build"Status codeDescription201CreatedCode samples for "Request a GitHub Pages build"Request examplepost/repos/{owner}/{repo}/pages/buildscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/pages/buildsResponseExample responseResponse schemaStatus: 201{
+  "url": "https://api.github.com/repos/github/developer.github.com/pages/builds/latest",
+  "status": "queued"
+}Get latest Pages buildGets information about the single most recent build of a GitHub Pages site.
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint.Fine-grained access tokens for "Get latest Pages build"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:pages:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "Get latest Pages build"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.HTTP response status codes for "Get latest Pages build"Status codeDescription200OKCode samples for "Get latest Pages build"Request exampleget/repos/{owner}/{repo}/pages/builds/latestcURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/pages/builds/latestResponseExample responseResponse schemaStatus: 200{
+  "url": "https://api.github.com/repos/github/developer.github.com/pages/builds/5472601",
+  "status": "built",
+  "error": {
+    "message": null
+  },
+  "pusher": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "commit": "351391cdcb88ffae71ec3028c91f375a8036a26b",
+  "duration": 2104,
+  "created_at": "2014-02-10T19:00:49Z",
+  "updated_at": "2014-02-10T19:00:51Z"
+}Get GitHub Pages buildGets information about a GitHub Pages build.
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint.Fine-grained access tokens for "Get GitHub Pages build"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:pages:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "Get GitHub Pages build"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.build_id integer RequiredHTTP response status codes for "Get GitHub Pages build"Status codeDescription200OKCode samples for "Get GitHub Pages build"Request exampleget/repos/{owner}/{repo}/pages/builds/{build_id}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/pages/builds/BUILD_IDResponseExample responseResponse schemaStatus: 200{
+  "url": "https://api.github.com/repos/github/developer.github.com/pages/builds/5472601",
+  "status": "built",
+  "error": {
+    "message": null
+  },
+  "pusher": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "commit": "351391cdcb88ffae71ec3028c91f375a8036a26b",
+  "duration": 2104,
+  "created_at": "2014-02-10T19:00:49Z",
+  "updated_at": "2014-02-10T19:00:51Z"
+}Create a GitHub Pages deploymentCreate a GitHub Pages deployment for a repository.
+The authenticated user must have write permission to the repository.Fine-grained access tokens for "Create a GitHub Pages deployment"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:pages:writeParameters for "Create a GitHub Pages deployment"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.Body parametersName, Type, Descriptionartifact_id number The ID of an artifact that contains the .zip or .tar of static assets to deploy. The artifact belongs to the repository. Either artifact_id or artifact_url are required.artifact_url string The URL of an artifact that contains the .zip or .tar of static assets to deploy. The artifact belongs to the repository. Either artifact_id or artifact_url are required.environment string The target environment for this GitHub Pages deployment.Default: github-pagespages_build_version string RequiredA unique string that represents the version of the build for this deployment.Default: GITHUB_SHAoidc_token string RequiredThe OIDC token issued by GitHub Actions certifying the origin of the deployment.HTTP response status codes for "Create a GitHub Pages deployment"Status codeDescription200OK400Bad Request404Resource not found422Validation failed, or the endpoint has been spammed.Code samples for "Create a GitHub Pages deployment"Request examplepost/repos/{owner}/{repo}/pages/deploymentscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/pages/deployments \
+  -d '{"artifact_url":"https://downloadcontent/","environment":"github-pages","pages_build_version":"4fd754f7e594640989b406850d0bc8f06a121251","oidc_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IlV2R1h4SUhlY0JFc1JCdEttemUxUEhfUERiVSIsImtpZCI6IjUyRjE5N0M0ODFERTcwMTEyQzQ0MUI0QTlCMzdCNTNDN0ZDRjBEQjUifQ.eyJqdGkiOiJhMWIwNGNjNy0zNzZiLTQ1N2QtOTMzNS05NTY5YmVjZDExYTIiLCJzdWIiOiJyZXBvOnBhcGVyLXNwYS9taW55aTplbnZpcm9ubWVudDpQcm9kdWN0aW9uIiwiYXVkIjoiaHR0cHM6Ly9naXRodWIuY29tL3BhcGVyLXNwYSIsInJlZiI6InJlZnMvaGVhZHMvbWFpbiIsInNoYSI6ImEyODU1MWJmODdiZDk3NTFiMzdiMmM0YjM3M2MxZjU3NjFmYWM2MjYiLCJyZXBvc2l0b3J5IjoicGFwZXItc3BhL21pbnlpIiwicmVwb3NpdG9yeV9vd25lciI6InBhcGVyLXNwYSIsInJ1bl9pZCI6IjE1NDY0NTkzNjQiLCJydW5fbnVtYmVyIjoiMzQiLCJydW5fYXR0ZW1wdCI6IjYiLCJhY3RvciI6IllpTXlzdHkiLCJ3b3JrZmxvdyI6IkNJIiwiaGVhZF9yZWYiOiIiLCJiYXNlX3JlZiI6IiIsImV2ZW50X25hbWUiOiJwdXNoIiwicmVmX3R5cGUiOiJicmFuY2giLCJlbnZpcm9ubWVudCI6IlByb2R1Y3Rpb24iLCJqb2Jfd29ya2Zsb3dfcmVmIjoicGFwZXItc3BhL21pbnlpLy5naXRodWIvd29ya2Zsb3dzL2JsYW5rLnltbEByZWZzL2hlYWRzL21haW4iLCJpc3MiOiJodHRwczovL3Rva2VuLmFjdGlvbnMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwibmJmIjoxNjM5MDAwODU2LCJleHAiOjE2MzkwMDE3NTYsImlhdCI6MTYzOTAwMTQ1Nn0.VP8WictbQECKozE2SgvKb2FqJ9hisWsoMkYRTqfBrQfZTCXi5IcFEdgDMB2X7a99C2DeUuTvHh9RMKXLL2a0zg3-Sd7YrO7a2ll2kNlnvyIypcN6AeIc7BxHsTTnZN9Ud_xmEsTrSRGOEKmzCFkULQ6N4zlVD0sidypmXlMemmWEcv_ZHqhioEI_VMp5vwXQurketWH7qX4oDgG4okyYtPrv5RQHbfQcVo9izaPJ_jnsDd0CBA0QOx9InjPidtIkMYQLyUgJy33HLJy86EFNUnAf8UhBQuQi5mAsEpEzBBuKpG3PDiPtYCHOk64JZkZGd5mR888a5sbHRiaF8hm8YA","preview":false}'ResponseExample responseResponse schemaStatus: 200{
+  "id": "4fd754f7e594640989b406850d0bc8f06a121251",
+  "status_url": "https://api.github.com/repos/github/developer.github.com/pages/deployments/4fd754f7e594640989b406850d0bc8f06a121251/status",
+  "page_url": "developer.github.com"
+}Get the status of a GitHub Pages deploymentGets the current status of a GitHub Pages deployment.
+The authenticated user must have read permission for the GitHub Pages site.Fine-grained access tokens for "Get the status of a GitHub Pages deployment"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:pages:readThis endpoint can be used without authentication or the aforementioned permissions if only public resources are requested.Parameters for "Get the status of a GitHub Pages deployment"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.pages_deployment_id  RequiredThe ID of the Pages deployment. You can also give the commit SHA of the deployment.HTTP response status codes for "Get the status of a GitHub Pages deployment"Status codeDescription200OK404Resource not foundCode samples for "Get the status of a GitHub Pages deployment"Request exampleget/repos/{owner}/{repo}/pages/deployments/{pages_deployment_id}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/pages/deployments/PAGES_DEPLOYMENT_IDResponseExample responseResponse schemaStatus: 200{
+  "status": "succeed"
+}Cancel a GitHub Pages deploymentCancels a GitHub Pages deployment.
+The authenticated user must have write permissions for the GitHub Pages site.Fine-grained access tokens for "Cancel a GitHub Pages deployment"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:pages:writeParameters for "Cancel a GitHub Pages deployment"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.pages_deployment_id  RequiredThe ID of the Pages deployment. You can also give the commit SHA of the deployment.HTTP response status codes for "Cancel a GitHub Pages deployment"Status codeDescription204A header with no content is returned.404Resource not foundCode samples for "Cancel a GitHub Pages deployment"Request examplepost/repos/{owner}/{repo}/pages/deployments/{pages_deployment_id}/cancelcURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/pages/deployments/PAGES_DEPLOYMENT_ID/cancelA header with no content is returned.Status: 204Get a DNS health check for GitHub PagesGets a health check of the DNS settings for the CNAME record configured for a repository's GitHub Pages.
+The first request to this endpoint returns a 202 Accepted status and starts an asynchronous background task to get the results for the domain. After the background task completes, subsequent requests to this endpoint return a 200 OK status with the health check results in the response.
+The authenticated user must be a repository administrator, maintainer, or have the 'manage GitHub Pages settings' permission to use this endpoint.
+OAuth app tokens and personal access tokens (classic) need the repo scope to use this endpoint.Fine-grained access tokens for "Get a DNS health check for GitHub Pages"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:administration:write and pages:writeParameters for "Get a DNS health check for GitHub Pages"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.HTTP response status codes for "Get a DNS health check for GitHub Pages"Status codeDescription200OK202Empty response400Custom domains are not available for GitHub Pages404Resource not found422There isn't a CNAME for this pageCode samples for "Get a DNS health check for GitHub Pages"Request exampleget/repos/{owner}/{repo}/pages/healthcURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/pages/healthResponseExample responseResponse schemaStatus: 200{
+  "domain": {
+    "host": "example.com",
+    "uri": "http://example.com/",
+    "nameservers": "default",
+    "dns_resolves": true,
+    "is_proxied": false,
+    "is_cloudflare_ip": false,
+    "is_fastly_ip": false,
+    "is_old_ip_address": false,
+    "is_a_record": true,
+    "has_cname_record": false,
+    "has_mx_records_present": false,
+    "is_valid_domain": true,
+    "is_apex_domain": true,
+    "should_be_a_record": true,
+    "is_cname_to_github_user_domain": false,
+    "is_cname_to_pages_dot_github_dot_com": false,
+    "is_cname_to_fastly": false,
+    "is_pointed_to_github_pages_ip": true,
+    "is_non_github_pages_ip_present": false,
+    "is_pages_domain": false,
+    "is_served_by_pages": true,
+    "is_valid": true,
+    "reason": null,
+    "responds_to_https": true,
+    "enforces_https": true,
+    "https_error": null,
+    "is_https_eligible": true,
+    "caa_error": null
+  },
+  "alt_domain": {
+    "host": "www.example.com",
+    "uri": "http://www.example.com/",
+    "nameservers": "default",
+    "dns_resolves": true,
+    "is_proxied": false,
+    "is_cloudflare_ip": false,
+    "is_fastly_ip": false,
+    "is_old_ip_address": false,
+    "is_a_record": true,
+    "has_cname_record": false,
+    "has_mx_records_present": false,
+    "is_valid_domain": true,
+    "is_apex_domain": true,
+    "should_be_a_record": true,
+    "is_cname_to_github_user_domain": false,
+    "is_cname_to_pages_dot_github_dot_com": false,
+    "is_cname_to_fastly": false,
+    "is_pointed_to_github_pages_ip": true,
+    "is_non_github_pages_ip_present": false,
+    "is_pages_domain": false,
+    "is_served_by_pages": true,
+    "is_valid": true,
+    "reason": null,
+    "responds_to_https": true,
+    "enforces_https": true,
+    "https_error": null,
+    "is_https_eligible": true,
+    "caa_error": null
+  }
+}

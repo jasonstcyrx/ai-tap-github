@@ -1,0 +1,66 @@
+The REST API is now versioned. For more information, see "About API versioning."REST API/Deploy keys/Deploy keysREST API endpoints for deploy keysUse the REST API to create and manage deploy keys.About deploy keys
+You can launch projects from a repository on GitHub.com to your server by using a deploy key, which is an SSH key that grants access to a single repository. GitHub attaches the public part of the key directly to your repository instead of a personal account, and the private part of the key remains on your server. For more information, see "Delivering deployments."
+Deploy keys can either be set up using the following API endpoints, or by using the GitHub web interface. To learn how to set deploy keys up in the web interface, see "Managing deploy keys."
+There are a few cases when a deploy key will be deleted by other activity:
+
+If the deploy key is created with a personal access token, deleting the personal access token will also delete the deploy key. Regenerating the personal access token will not delete the deploy key.
+If the deploy key is created with an OAuth app token, revoking the token will also delete the deploy key.
+
+Conversely, these activities will not delete a deploy key:
+
+If the deploy key is created with a GitHub App user access token, revoking the token will not delete the deploy key.
+If the deploy key is created with a GitHub App installation access token, uninstalling or deleting the app will not delete the deploy key.
+If the deploy key is created with a personal access token, regenerating the personal access token will not delete the deploy key.
+List deploy keysFine-grained access tokens for "List deploy keys"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:administration:readParameters for "List deploy keys"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.Query parametersName, Type, Descriptionper_page integer The number of results per page (max 100). For more information, see "Using pagination in the REST API."Default: 30page integer The page number of the results to fetch. For more information, see "Using pagination in the REST API."Default: 1HTTP response status codes for "List deploy keys"Status codeDescription200OKCode samples for "List deploy keys"Request exampleget/repos/{owner}/{repo}/keyscURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/keysResponseExample responseResponse schemaStatus: 200[
+  {
+    "id": 1,
+    "key": "ssh-rsa AAA...",
+    "url": "https://api.github.com/repos/octocat/Hello-World/keys/1",
+    "title": "octocat@octomac",
+    "verified": true,
+    "created_at": "2014-12-10T15:53:42Z",
+    "read_only": true,
+    "added_by": "octocat",
+    "last_used": "2022-01-10T15:53:42Z"
+  }
+]Create a deploy keyYou can create a read-only deploy key.Fine-grained access tokens for "Create a deploy key"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:administration:writeParameters for "Create a deploy key"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.Body parametersName, Type, Descriptiontitle string A name for the key.key string RequiredThe contents of the key.read_only boolean If true, the key will only be able to read repository contents. Otherwise, the key will be able to read and write.
+Deploy keys with write access can perform the same actions as an organization member with admin access, or a collaborator on a personal repository. For more information, see "Repository permission levels for an organization" and "Permission levels for a user account repository."HTTP response status codes for "Create a deploy key"Status codeDescription201Created422Validation failed, or the endpoint has been spammed.Code samples for "Create a deploy key"Request examplepost/repos/{owner}/{repo}/keyscURLJavaScriptGitHub CLIcurl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/keys \
+  -d '{"title":"octocat@octomac","key":"ssh-rsa AAA...","read_only":true}'ResponseExample responseResponse schemaStatus: 201{
+  "id": 1,
+  "key": "ssh-rsa AAA...",
+  "url": "https://api.github.com/repos/octocat/Hello-World/keys/1",
+  "title": "octocat@octomac",
+  "verified": true,
+  "created_at": "2014-12-10T15:53:42Z",
+  "read_only": true,
+  "added_by": "octocat",
+  "last_used": "2022-01-10T15:53:42Z"
+}Get a deploy keyFine-grained access tokens for "Get a deploy key"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:administration:readParameters for "Get a deploy key"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.key_id integer RequiredThe unique identifier of the key.HTTP response status codes for "Get a deploy key"Status codeDescription200OK404Resource not foundCode samples for "Get a deploy key"Request exampleget/repos/{owner}/{repo}/keys/{key_id}cURLJavaScriptGitHub CLIcurl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/keys/KEY_IDResponseExample responseResponse schemaStatus: 200{
+  "id": 1,
+  "key": "ssh-rsa AAA...",
+  "url": "https://api.github.com/repos/octocat/Hello-World/keys/1",
+  "title": "octocat@octomac",
+  "verified": true,
+  "created_at": "2014-12-10T15:53:42Z",
+  "read_only": true,
+  "added_by": "octocat",
+  "last_used": "2022-01-10T15:53:42Z"
+}Delete a deploy keyDeploy keys are immutable. If you need to update a key, remove the key and create a new one instead.Fine-grained access tokens for "Delete a deploy key"This endpoint works with the following token types:GitHub App user access tokensGitHub App installation access tokensFine-grained personal access tokensThe token must have the following permission set:administration:writeParameters for "Delete a deploy key"HeadersName, Type, Descriptionaccept string Setting to application/vnd.github+json is recommended.Path parametersName, Type, Descriptionowner string RequiredThe account owner of the repository. The name is not case sensitive.repo string RequiredThe name of the repository without the .git extension. The name is not case sensitive.key_id integer RequiredThe unique identifier of the key.HTTP response status codes for "Delete a deploy key"Status codeDescription204No ContentCode samples for "Delete a deploy key"Request exampledelete/repos/{owner}/{repo}/keys/{key_id}cURLJavaScriptGitHub CLIcurl -L \
+  -X DELETE \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <YOUR-TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/OWNER/REPO/keys/KEY_IDResponseStatus: 204
